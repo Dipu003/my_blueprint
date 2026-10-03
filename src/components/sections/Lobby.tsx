@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { FEED, OPEN_TO, PLAYER, STATS } from '@/data/portfolio';
 import { useGame } from '@/providers/GameProvider';
-import { play } from '@/lib/sound';
 import { Panel } from '@/components/ui/Panel';
 import { GameButton } from '@/components/ui/GameButton';
 import { Emblem } from '@/components/ui/Emblem';
@@ -14,7 +13,7 @@ import { roleIcon } from '@/components/ui/roleIcon';
 import { item, stagger } from './motion';
 
 export function Lobby() {
-  const { go } = useGame();
+  const { go, openRole, years } = useGame();
 
   return (
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-8">
@@ -31,7 +30,7 @@ export function Lobby() {
             className="relative mt-2 font-display text-[clamp(3.6rem,11vw,7.5rem)] font-extrabold italic uppercase leading-[0.82] tracking-tight"
           >
             <span className="block text-white">{PLAYER.firstName}</span>
-            <span className="block bg-gradient-to-r from-gold to-gold-hot bg-clip-text pr-3 text-transparent">{PLAYER.lastName}</span>
+            <span className="block bg-[linear-gradient(90deg,rgb(var(--hero-a)),rgb(var(--hero-b)))] bg-clip-text pr-3 text-transparent">{PLAYER.lastName}</span>
           </motion.h1>
 
           <motion.p variants={item} className="relative mt-3 font-display text-2xl font-semibold italic uppercase tracking-wider text-zinc-200">
@@ -61,7 +60,7 @@ export function Lobby() {
         <motion.div variants={item}>
           <Panel title="Combat record" tag="Career">
             <div className="flex items-center gap-4">
-              <Emblem initials={PLAYER.initials} className="h-24 w-24 shrink-0 drop-shadow-[0_0_18px_rgba(255,138,0,0.4)]" />
+              <Emblem initials={PLAYER.initials} className="h-24 w-24 shrink-0 drop-shadow-[0_0_18px_rgb(var(--glow-e)/0.4)]" />
               <div className="min-w-0">
                 <div className="font-display text-2xl font-bold italic uppercase leading-none text-white">{PLAYER.name}</div>
                 <div className="mt-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
@@ -74,12 +73,12 @@ export function Lobby() {
             <dl className="mt-4 grid grid-cols-2 gap-2">
               {STATS.map((s, i) => (
                 <div key={s.label} className="cut tile h-[5.5rem] bg-white/[0.05] px-3 py-2.5">
-                  <dd className="font-display text-4xl font-extrabold italic leading-none text-gold">{s.value}</dd>
+                  <dd className="font-display text-4xl font-extrabold italic leading-none text-gold">{s.live === 'years' ? years : s.value}</dd>
                   <dt className="mt-1 text-[11px] font-semibold uppercase tracking-widest text-zinc-400">{s.label}</dt>
                   {s.bar !== undefined && (
                     <div className="mt-2 h-1 -skew-x-12 bg-white/10">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-gold-hot to-gold"
+                        className="h-full bg-gradient-to-r from-flame-hot to-flame"
                         initial={{ width: 0 }}
                         animate={{ width: `${s.bar}%` }}
                         transition={{ duration: 0.9, delay: 0.3 + i * 0.1 }}
@@ -95,7 +94,7 @@ export function Lobby() {
 
       <motion.section variants={item} aria-labelledby="open-to">
         <h2 id="open-to" className="mb-3 flex items-center gap-2 font-display text-xl font-bold italic uppercase tracking-wide text-white">
-          <span aria-hidden className="h-4 w-1 -skew-x-12 bg-gold" /> Select mode
+          <span aria-hidden className="h-4 w-1 -skew-x-12 bg-flame" /> Select mode
           <span className="ml-1 text-xs font-semibold not-italic tracking-[0.2em] text-zinc-500">OPEN TO</span>
         </h2>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
@@ -103,8 +102,8 @@ export function Lobby() {
             <button
               key={o.role}
               type="button"
-              onClick={() => go('squad')}
-              onMouseEnter={() => play('hover')}
+              aria-haspopup="dialog"
+              onClick={() => openRole(o.id)}
               className="para tile flex h-full min-h-[6.75rem] flex-col items-start justify-between bg-white/[0.05] px-8 py-3 text-left"
             >
               <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">

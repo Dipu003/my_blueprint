@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { SECTIONS } from '@/data/portfolio';
 import { useGame } from '@/providers/GameProvider';
 import { play } from '@/lib/sound';
-import { Rank } from '@/components/ui/Rank';
+import { Icon } from '@/components/ui/Icon';
 
-/** "Level up" banner that slides in once, when every tab has been visited. */
-export function LevelUp() {
-  const { xp, level } = useGame();
+/** Achievement banner that slides in once, when the visitor has opened every tab (recon 100%). */
+export function ReconComplete() {
+  const { xp } = useGame();
   const [show, setShow] = useState(false);
   const fired = useRef(false);
 
@@ -36,12 +37,14 @@ export function LevelUp() {
             animate={{ opacity: 1, y: 0, scaleX: 1 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-            className="para flex items-center gap-4 bg-gradient-to-r from-gold-hot via-gold to-gold-hot px-12 py-3 text-ink shadow-[0_0_30px_rgba(255,160,0,0.5)]"
+            className="para flex items-center gap-4 bg-gradient-to-r from-flame-hot via-flame to-flame-hot px-12 py-3 text-on-gold shadow-[0_0_30px_rgb(var(--glow)/0.5)]"
           >
-            <Rank count={3} className="h-8 w-8" />
+            <Icon name="medal" className="h-8 w-8" />
             <div className="leading-none">
-              <div className="font-display text-3xl font-extrabold italic uppercase tracking-wide">Level up</div>
-              <div className="mt-1 text-xs font-bold uppercase tracking-[0.2em]">All tabs explored · Level {level}</div>
+              <div className="font-display text-3xl font-extrabold italic uppercase tracking-wide">Recon complete</div>
+              <div className="mt-1 text-xs font-bold uppercase tracking-[0.2em]">
+                Achievement · all {SECTIONS.length} tabs explored
+              </div>
             </div>
           </motion.div>
         )}

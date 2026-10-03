@@ -9,11 +9,11 @@ import { Icon } from '@/components/ui/Icon';
 import { GameButton } from '@/components/ui/GameButton';
 import { roleIcon } from '@/components/ui/roleIcon';
 
-/** "Open to roles" status chip. Click it to see which roles are on the table. */
+/** "Open to roles" status chip. Click it to see which roles are on the table, and a role to see what I did in it. */
 export function RolesMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { go } = useGame();
+  const { go, openRole } = useGame();
 
   useEffect(() => {
     if (!open) return;
@@ -42,9 +42,8 @@ export function RolesMenu() {
           setOpen((o) => !o);
           play('click');
         }}
-        onMouseEnter={() => play('hover')}
-        className={`para tile flex h-9 items-center gap-2 px-5 text-[11px] font-semibold uppercase tracking-[0.2em] sm:px-6 ${
-          open ? 'bg-gold/20 text-gold' : 'bg-white/[0.06] text-zinc-200'
+        className={`para tile flex h-9 items-center gap-2 px-4 text-[11px] font-semibold uppercase tracking-[0.2em] sm:px-6 ${
+          open ? 'bg-flame/20 text-gold' : 'bg-white/[0.06] text-zinc-200'
         }`}
       >
         <span className="h-2 w-2 animate-dot rounded-full bg-ok shadow-[0_0_8px_#5fd16a]" />
@@ -72,12 +71,22 @@ export function RolesMenu() {
             </p>
             <ul className="mt-3 space-y-1.5">
               {OPEN_TO.map((o) => (
-                <li key={o.role} className="cut tile flex h-14 items-center gap-3 bg-white/[0.05] px-3">
-                  <Icon name={roleIcon(o.role)} className="h-5 w-5 shrink-0 text-gold" />
-                  <div className="min-w-0">
-                    <div className="truncate font-display text-lg font-bold italic uppercase leading-tight">{o.role}</div>
-                    <div className="truncate text-xs text-zinc-400">{o.focus}</div>
-                  </div>
+                <li key={o.role}>
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    onClick={() => {
+                      setOpen(false);
+                      openRole(o.id);
+                    }}
+                    className="cut tile flex h-14 w-full items-center gap-3 bg-white/[0.05] px-3 text-left"
+                  >
+                    <Icon name={roleIcon(o.role)} className="h-5 w-5 shrink-0 text-gold" />
+                    <div className="min-w-0">
+                      <div className="truncate font-display text-lg font-bold italic uppercase leading-tight">{o.role}</div>
+                      <div className="truncate text-xs text-zinc-400">{o.focus}</div>
+                    </div>
+                  </button>
                 </li>
               ))}
             </ul>

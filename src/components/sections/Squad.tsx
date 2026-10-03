@@ -51,8 +51,7 @@ export function Squad() {
                     <button
                       type="button"
                       onClick={() => copy(r.key, r.copy!)}
-                      onMouseEnter={() => play('hover')}
-                      className="para w-24 shrink-0 bg-white/10 py-1 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-200 transition-colors hover:bg-gold hover:text-ink"
+                      className="para w-24 shrink-0 bg-white/10 py-1 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-200 transition-colors hover:bg-flame hover:text-on-gold"
                     >
                       {copied === r.key ? 'Copied' : 'Copy'}
                     </button>
@@ -74,7 +73,6 @@ export function Squad() {
                 href={CONTACT.linkedin.href}
                 target="_blank"
                 rel="noreferrer"
-                onMouseEnter={() => play('hover')}
                 onClick={() => play('click')}
                 className="cut tile flex h-14 items-center gap-3 bg-white/[0.05] px-3"
               >

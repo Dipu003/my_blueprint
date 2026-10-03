@@ -44,16 +44,15 @@ export function Loadout() {
                       setSel(i);
                       play('click');
                     }}
-                    onMouseEnter={() => play('hover')}
                     className={`para tile flex h-[3.75rem] w-full items-center gap-3 pl-6 pr-8 text-left ${
-                      active ? 'bg-gold/20' : 'bg-white/[0.05]'
+                      active ? 'bg-flame/20' : 'bg-white/[0.05]'
                     }`}
                   >
                     {active && (
                       <motion.span
                         layoutId="slot-bar"
                         transition={{ type: 'spring', stiffness: 700, damping: 40 }}
-                        className="absolute inset-y-0 left-0 w-1.5 bg-gold"
+                        className="absolute inset-y-0 left-0 w-1.5 bg-flame"
                       />
                     )}
                     <Icon name={SLOT_ICON[g.name] ?? 'star'} className="h-5 w-5 shrink-0 text-gold max-sm:hidden" />
@@ -86,11 +85,7 @@ export function Loadout() {
               </h2>
               <ul className="relative mt-5 grid auto-rows-[3.5rem] grid-cols-1 gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
                 {cur.items.map((it, i) => (
-                  <li
-                    key={it}
-                    onMouseEnter={() => play('hover')}
-                    className="para tile flex h-full items-center gap-3 bg-white/[0.05] pl-6 pr-8"
-                  >
+                  <li key={it} className="para tile flex h-full items-center gap-3 bg-white/[0.05] pl-6 pr-8">
                     <span className="tile-num w-6 shrink-0 font-display text-sm font-bold italic tabular-nums">{String(i + 1).padStart(2, '0')}</span>
                     <span className="line-clamp-2 min-w-0 text-[13px] font-semibold uppercase leading-tight tracking-wide">{it}</span>
                   </li>

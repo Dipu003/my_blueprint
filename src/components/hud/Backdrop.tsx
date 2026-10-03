@@ -1,4 +1,5 @@
 import { PLAYER } from '@/data/portfolio';
+import { Spotlight } from '@/components/hud/Spotlight';
 
 // Deterministic values so server and client render identically (no Math.random).
 const EMBERS = Array.from({ length: 18 }, (_, i) => ({
@@ -10,8 +11,33 @@ const EMBERS = Array.from({ length: 18 }, (_, i) => ({
 }));
 
 /**
- * Fixed lobby background: amber glow, SVG hex field, slanted light streaks, a pointer-following
- * spotlight (--mx/--my are set by the Companion), rising embers and the full name set diagonally.
+ * One closed, hand-drawn-looking contour loop around (cx, cy). Rounded to 1 decimal so the server
+ * and the browser print identical numbers (they can differ in the last digits of Math.sin/cos).
+ */
+function loop(cx: number, cy: number, r: number, seed: number): string {
+  const n = 72;
+  const pts: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const wob = 1 + 0.15 * Math.sin(3 * a + seed) + 0.09 * Math.sin(5 * a + seed * 1.7) + 0.05 * Math.sin(8 * a + seed * 2.3);
+    const rr = r * wob;
+    const x = Math.round((cx + rr * Math.cos(a)) * 10) / 10;
+    const y = Math.round((cy + rr * Math.sin(a) * 0.8) * 10) / 10;
+    pts.push(`${x} ${y}`);
+  }
+  return `M${pts.join('L')}Z`;
+}
+
+/** Topographic map: two "hills" of nested contour loops, every 4th line drawn heavier. */
+const CONTOURS = [
+  ...Array.from({ length: 10 }, (_, k) => ({ d: loop(960, 200, 36 + k * 42, 0.6 + k * 0.28), major: k % 4 === 0 })),
+  ...Array.from({ length: 8 }, (_, k) => ({ d: loop(140, 640, 30 + k * 40, 2.1 + k * 0.33), major: k % 4 === 0 })),
+];
+
+/**
+ * Fixed background. Dark: amber glow, hex field, slanted light streaks, a pointer-following
+ * spotlight, rising embers and the full name set diagonally. Light: the same layers re-coloured
+ * (cool blue glows, a faint blueprint grid), plus a topographic contour map (see globals.css).
  */
 export function Backdrop() {
   return (
@@ -19,7 +45,7 @@ export function Backdrop() {
       <div className="stripes absolute inset-0" />
 
       <svg
-        className="absolute inset-0 h-full w-full"
+        className="bd-hex absolute inset-0 h-full w-full"
         style={{
           WebkitMaskImage: 'radial-gradient(ellipse at 70% 40%, #000 0%, transparent 75%)',
           maskImage: 'radial-gradient(ellipse at 70% 40%, #000 0%, transparent 75%)',
@@ -27,23 +53,23 @@ export function Backdrop() {
       >
         <defs>
           <pattern id="hex-field" width="56" height="100" patternUnits="userSpaceOnUse">
-            <path d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100" fill="none" stroke="rgba(255,190,60,0.10)" />
-            <path d="M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34" fill="none" stroke="rgba(255,190,60,0.10)" />
+            <path d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100" fill="none" stroke="currentColor" />
+            <path d="M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34" fill="none" stroke="currentColor" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#hex-field)" />
       </svg>
 
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(55% 70% at 80% 38%, rgba(255,122,0,0.20), transparent 70%), radial-gradient(40% 50% at 8% 100%, rgba(255,180,0,0.07), transparent 70%)',
-        }}
-      />
-      <div className="absolute -right-[10%] top-0 h-full w-[38%] -skew-x-[18deg] bg-gradient-to-l from-gold/[0.10] via-gold/[0.03] to-transparent" />
-      <div className="absolute right-[24%] top-0 h-full w-[5%] -skew-x-[18deg] bg-white/[0.025]" />
-      <div className="absolute -left-[6%] bottom-0 h-[45%] w-[40%] -skew-x-[18deg] bg-gradient-to-r from-white/[0.04] to-transparent" />
+      <svg className="bd-contour absolute inset-0 h-full w-full" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" fill="none">
+        {CONTOURS.map((c, i) => (
+          <path key={i} d={c.d} stroke="currentColor" strokeWidth={c.major ? 1.8 : 1} strokeLinejoin="round" />
+        ))}
+      </svg>
+
+      <div className="bd-glow absolute inset-0" />
+      <div className="absolute -right-[10%] top-0 h-full w-[38%] -skew-x-[18deg] bg-gradient-to-l from-flame/[0.10] via-flame/[0.03] to-transparent" />
+      <div className="bd-streak absolute right-[24%] top-0 h-full w-[5%] -skew-x-[18deg] bg-white/[0.025]" />
+      <div className="bd-streak absolute -left-[6%] bottom-0 h-[45%] w-[40%] -skew-x-[18deg] bg-gradient-to-r from-white/[0.04] to-transparent" />
 
       {/* Full name, diagonal, fully inside the viewport at every width. */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[18deg] opacity-50 sm:opacity-100">
@@ -55,13 +81,7 @@ export function Backdrop() {
         </div>
       </div>
 
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(360px circle at var(--mx, 72%) var(--my, 32%), rgba(255,170,0,0.13), transparent 65%)',
-        }}
-      />
+      <Spotlight />
 
       {EMBERS.map((e, i) => (
         <span
@@ -80,7 +100,7 @@ export function Backdrop() {
         />
       ))}
 
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.6) 100%)' }} />
+      <div className="bd-vignette absolute inset-0" />
     </div>
   );
 }

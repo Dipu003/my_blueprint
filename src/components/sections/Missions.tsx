@@ -40,7 +40,7 @@ export function Missions() {
               <Meter label="Objectives" value={100} right={`${OBJECTIVES.length}/${OBJECTIVES.length}`} />
               <div className="mt-3 flex flex-wrap gap-2">
                 {MISSION.rewards.map((r) => (
-                  <span key={r} className="para bg-gradient-to-r from-gold-hot to-gold px-4 py-1 text-xs font-bold uppercase tracking-wider text-ink">
+                  <span key={r} className="para bg-gradient-to-r from-flame-hot to-flame px-4 py-1 text-xs font-bold uppercase tracking-wider text-on-gold">
                     Reward · {r}
                   </span>
                 ))}
@@ -79,7 +79,7 @@ export function Missions() {
                 <ul className="relative space-y-2">
                   {o.points.map((p) => (
                     <li key={p} className="flex gap-2.5 text-sm leading-relaxed text-zinc-300">
-                      <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rotate-45 bg-gold" />
+                      <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rotate-45 bg-flame" />
                       {p}
                     </li>
                   ))}
@@ -88,7 +88,7 @@ export function Missions() {
                   {o.tools.map((t) => (
                     <li
                       key={t}
-                      className="para tile flex h-8 items-center justify-center bg-gold/10 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-gold"
+                      className="para tile flex h-8 items-center justify-center bg-flame/10 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-gold"
                     >
                       {t}
                     </li>

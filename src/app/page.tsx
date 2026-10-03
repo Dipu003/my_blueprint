@@ -1,13 +1,17 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Backdrop } from '@/components/hud/Backdrop';
 import { TopBar } from '@/components/hud/TopBar';
 import { NavTabs } from '@/components/hud/NavTabs';
-import { LevelUp } from '@/components/hud/LevelUp';
+import { ReconComplete } from '@/components/hud/ReconComplete';
 import { Companion } from '@/components/hud/Companion';
+import { PointerRotator } from '@/components/hud/PointerRotator';
+import { RoleBrief } from '@/components/hud/RoleBrief';
+import { ScrollHud } from '@/components/hud/ScrollHud';
+import { SectionBanner } from '@/components/hud/SectionBanner';
 import { SectionView } from '@/components/sections';
 import { useGame } from '@/providers/GameProvider';
 
@@ -16,6 +20,12 @@ const LOADED_KEY = 'lobby:loaded';
 export default function Page() {
   const { section } = useGame();
   const [loaded, setLoaded] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
+
+  // A new tab starts at the top instead of inheriting the old tab's scroll position.
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 });
+  }, [section]);
 
   // Skip the loading screen on repeat visits within a session.
   useEffect(() => {
@@ -44,7 +54,7 @@ export default function Page() {
       >
         <TopBar />
         <NavTabs />
-        <main className="game-scroll relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:px-8">
+        <main ref={mainRef} className="game-scroll relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:px-8">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={section}
@@ -60,8 +70,13 @@ export default function Page() {
         </main>
       </motion.div>
 
-      <LevelUp />
+      {/* Not over the loading screen: a link straight to a role would otherwise open on top of it. */}
+      {loaded && <RoleBrief />}
+      <ReconComplete />
+      <ScrollHud />
+      <SectionBanner />
       <Companion />
+      <PointerRotator />
     </>
   );
 }

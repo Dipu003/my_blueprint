@@ -13,14 +13,14 @@ import { item, stagger } from './motion';
 function Header({ r, expandable, open }: { r: Role; expandable: boolean; open: boolean }) {
   return (
     <>
-      <div className="cut grid h-14 w-14 shrink-0 place-items-center bg-gold/15 text-gold">
+      <div className="cut grid h-14 w-14 shrink-0 place-items-center bg-flame/15 text-gold">
         <Rank count={r.stripes} className="h-9 w-9" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span
             className={`para px-4 py-0.5 text-[11px] font-bold uppercase tracking-wider ${
-              r.tag === 'Current' ? 'bg-ok text-ink' : 'bg-gradient-to-r from-gold-hot to-gold text-ink'
+              r.tag === 'Current' ? 'bg-ok text-on-ok' : 'bg-gradient-to-r from-flame-hot to-flame text-on-gold'
             }`}
           >
             {r.tag}
@@ -49,7 +49,7 @@ function Entry({ r, open, onToggle }: { r: Role; open: boolean; onToggle: () => 
       {/* Node on the timeline rail */}
       <span
         aria-hidden
-        className={`absolute -left-6 top-[34px] h-3 w-3 rotate-45 border-2 border-gold transition-colors ${open ? 'bg-gold' : 'bg-ink'}`}
+        className={`absolute -left-6 top-[34px] h-3 w-3 rotate-45 border-2 border-gold transition-colors ${open ? 'bg-flame' : 'bg-ink'}`}
       />
       <div className="panel" data-active={open}>
         {expandable ? (
@@ -61,7 +61,6 @@ function Entry({ r, open, onToggle }: { r: Role; open: boolean; onToggle: () => 
               onToggle();
               play('click');
             }}
-            onMouseEnter={() => play('hover')}
             className="flex w-full items-center gap-4 p-4 text-left"
           >
             <Header r={r} expandable open={open} />
@@ -84,7 +83,7 @@ function Entry({ r, open, onToggle }: { r: Role; open: boolean; onToggle: () => 
             <ul className="space-y-2.5 border-t border-white/10 px-4 pb-5 pt-4">
               {r.points.map((p) => (
                 <li key={p} className="flex gap-3 text-sm leading-relaxed text-zinc-300">
-                  <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rotate-45 bg-gold" />
+                  <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rotate-45 bg-flame" />
                   {p}
                 </li>
               ))}
@@ -128,7 +127,7 @@ export function Career() {
                   <div className="flex items-center justify-between gap-2">
                     <Icon name="graduation" className="h-6 w-6 shrink-0 text-gold" />
                     {e.score && (
-                      <span className="para bg-gradient-to-r from-gold-hot to-gold px-4 py-0.5 text-[11px] font-bold uppercase tracking-wider text-ink">
+                      <span className="para bg-gradient-to-r from-flame-hot to-flame px-4 py-0.5 text-[11px] font-bold uppercase tracking-wider text-on-gold">
                         {e.score}
                       </span>
                     )}

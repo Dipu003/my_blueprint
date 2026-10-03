@@ -1,20 +1,28 @@
 // Single source of truth for all content. Edit this file to update the site.
 // Sources: resume PDF + LinkedIn profile PDF export (linkedin.com/in/deepak-senapati-6566a5213).
 
+import voiceLines from './voice-lines.json';
+
 export type SectionId = 'lobby' | 'missions' | 'loadout' | 'career' | 'squad';
 
 export interface SectionDef {
   id: SectionId;
   label: string;
   hint: string;
+  /** Banner status once the section "arrives". */
+  status: string;
+  /** Line spoken by the announcer when you open the section. */
+  voice: string;
 }
 
+// `voice` comes from voice-lines.json, which also drives the pre-rendered clips in public/voice.
+// After editing a line there, run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-voice.ps1
 export const SECTIONS: SectionDef[] = [
-  { id: 'lobby', label: 'Lobby', hint: 'Operator profile' },
-  { id: 'missions', label: 'Missions', hint: 'Featured project' },
-  { id: 'loadout', label: 'Loadout', hint: 'Skills & stack' },
-  { id: 'career', label: 'Career', hint: 'Match history' },
-  { id: 'squad', label: 'Squad Up', hint: 'Get in touch' },
+  { id: 'lobby', label: 'Lobby', hint: 'Operator profile', status: 'Operator online', voice: voiceLines.lobby },
+  { id: 'missions', label: 'Missions', hint: 'Featured project', status: 'Mission intel acquired', voice: voiceLines.missions },
+  { id: 'loadout', label: 'Loadout', hint: 'Skills & stack', status: 'Gear locked in', voice: voiceLines.loadout },
+  { id: 'career', label: 'Career', hint: 'Match history', status: 'Service record loaded', voice: voiceLines.career },
+  { id: 'squad', label: 'Squad Up', hint: 'Get in touch', status: 'Standing by', voice: voiceLines.squad },
 ];
 
 export const PLAYER = {
@@ -26,12 +34,28 @@ export const PLAYER = {
   rank: 'Associate Team Lead (SDE-2)',
   status: 'Freelance',
   location: 'Bhubaneswar, Odisha, India',
-  level: 3, // starts at years of experience; exploring every tab levels you up
+  years: 3, // fallback for the first render only; the live value is yearsOfExperience() below
   bio: 'Software Engineer and Backend Developer building scalable, secure, production-ready systems, with 3 years delivering mission-critical Healthcare Information Systems and hands-on Generative AI and Agentic AI. I focus on taking AI beyond prototypes: systems that hold up under real users, real data and production constraints.',
 };
 
-export const STATS: { value: string; label: string; bar?: number }[] = [
-  { value: '3', label: 'Years in the field' },
+/**
+ * First month of full-time work at Squbix Digital (LinkedIn: "3 years" there). The Feb 2023
+ * internship is deliberately not counted.
+ */
+export const CAREER_START = { year: 2023, month: 7 } as const;
+
+/**
+ * Whole years of professional experience as of `now`. It ticks up by itself every July with no
+ * edit needed.
+ */
+export function yearsOfExperience(now: Date = new Date()): number {
+  const years = now.getFullYear() - CAREER_START.year - (now.getMonth() + 1 < CAREER_START.month ? 1 : 0);
+  return Math.max(0, years);
+}
+
+export const STATS: { value: string; label: string; bar?: number; live?: 'years' }[] = [
+  // `live: 'years'` rows show yearsOfExperience() instead of `value` (which is the first-render fallback).
+  { value: '3', label: 'Years in the field', live: 'years' },
   { value: '50%', label: 'Documentation effort cut', bar: 50 },
   { value: '25%', label: 'LLM inference cost cut', bar: 25 },
   { value: '100+', label: 'Data collections queried' },
@@ -45,14 +69,247 @@ export const FEED: { weapon: string; target: string; result: string }[] = [
   { weapon: 'Kafka', target: 'Async third-party workloads', result: 'Decoupled' },
 ];
 
+/** A group of related work inside a role briefing. */
+export interface RoleWork {
+  title: string;
+  points: string[];
+}
+
+/**
+ * A role I'm open to. The lobby shows each as a "mode"; opening one lists what I have actually done
+ * in that role. Written from the resume and the LinkedIn profile: keep every line true to those two
+ * documents, with no invented numbers, tools or employers. Projects get their own tab later.
+ */
+export interface OpenRole {
+  /** Used in the URL, e.g. #lobby/devops-engineer. */
+  id: string;
+  role: string;
+  /** Short name for the mode switcher. */
+  short: string;
+  focus: string;
+  /** The role in a sentence or two. */
+  pitch: string;
+  /** Headline results. `live: 'years'` shows yearsOfExperience() instead of `value`. */
+  proof: { value: string; label: string; live?: 'years' }[];
+  work: RoleWork[];
+  tools: string[];
+  /** Which CAREER roles (by id) this experience comes from. */
+  from: string[];
+  /** Certifications that back the role up (named exactly as in CERTIFICATIONS). */
+  medals?: string[];
+}
+
 /** Roles from the resume (Software Engineer, AI/ML, Agentic AI, DevOps) and LinkedIn (Backend, GenAI). */
-export const OPEN_TO: { role: string; focus: string }[] = [
-  { role: 'Software Engineer (Node.js)', focus: 'NestJS · TypeScript · AWS' },
-  { role: 'AI/ML Engineer', focus: 'LLMs · RAG · Embeddings' },
-  { role: 'Agentic AI Developer', focus: 'LangGraph · MCP · Multi-agent' },
-  { role: 'GenAI Engineer', focus: 'Prompting · RAG · Production LLMs' },
-  { role: 'DevOps Engineer', focus: 'Terraform · Kubernetes · CI/CD' },
+export const OPEN_TO: OpenRole[] = [
+  {
+    id: 'software-engineer',
+    role: 'Software Engineer (Node.js)',
+    short: 'Software',
+    focus: 'NestJS · TypeScript · AWS',
+    pitch:
+      'Scalable, secure, production-ready backends for mission-critical healthcare software: NestJS microservices, event-driven workflows and multi-tenant APIs, owned from design to deployment.',
+    proof: [
+      { value: '3', label: 'Years shipping backends', live: 'years' },
+      { value: '100+', label: 'Data collections queried' },
+      { value: 'SDE-2', label: 'Associate Team Lead' },
+    ],
+    work: [
+      {
+        title: 'APIs & microservices',
+        points: [
+          'Developed and maintained backend microservices and RESTful/GraphQL APIs using Node.js, TypeScript, NestJS and Python.',
+          'Architected and maintained production-grade services, driving system design decisions for scalability and reliability.',
+          'Created APIs for a carbon trading app used in production environments.',
+          'Contributed to the UNHU App backend, improving accessibility for thousands of truck drivers and laborers.',
+        ],
+      },
+      {
+        title: 'Healthcare SaaS platform',
+        points: [
+          'Delivered backend functionality for enterprise healthcare SaaS workflows: EMR, patient visits, medication workflows, tenant configuration, data export and external system integrations.',
+          'Built services for patient management, appointments, electronic medical records, billing and KYC verification.',
+          'Developed and deployed the platform on FHIR/HL7 standards, with Apache Kafka for real-time data processing.',
+          'Shipped the React/Redux frontend and Node.js APIs used daily by clinicians, owning features end-to-end from UI to backend to deployment.',
+        ],
+      },
+      {
+        title: 'Events, security & data',
+        points: [
+          'Architected event-driven workflows with Apache Kafka for asynchronous processing and real-time data exchange, decoupling backend workloads from third-party integrations.',
+          'Implemented multi-tenant API authentication and authorization with JWT, RBAC and SSO: issuer/audience validation, token expiry, tenant mapping, replay protection and audit logging.',
+          'Optimized MongoDB and DynamoDB data workflows, including complex aggregation pipelines and queries across 100+ application collections.',
+          'Applied Redis caching to frequently accessed data, reducing repeated database operations and improving API responsiveness.',
+        ],
+      },
+    ],
+    tools: ['Node.js', 'TypeScript', 'NestJS', 'Python', 'REST APIs', 'GraphQL', 'Microservices', 'Kafka', 'MongoDB', 'DynamoDB', 'Redis', 'AWS Lambda'],
+    from: ['sde2', 'sde1', 'intern'],
+    medals: ['AWS Master certificate', 'Data Streaming Engineer Foundations'],
+  },
+  {
+    id: 'ai-ml-engineer',
+    role: 'AI/ML Engineer',
+    short: 'AI / ML',
+    focus: 'LLMs · RAG · Embeddings',
+    pitch:
+      'Applied LLM engineering in production: RAG over clinical conversations, vector and graph databases, and context and token tuning that cut inference cost by 25%.',
+    proof: [
+      { value: '−25%', label: 'LLM inference cost' },
+      { value: '3', label: 'Vector & graph stores' },
+      { value: 'RAG', label: 'Chats into EMR data' },
+    ],
+    work: [
+      {
+        title: 'Retrieval pipelines',
+        points: [
+          'Built RAG pipelines that transform patient-doctor conversations into EMR-ready structured data, combining retrieval, embeddings and vector search for accurate, compliant output.',
+          'Combined vector and graph databases (Pinecone, ChromaDB, Neo4j) in those RAG pipelines.',
+        ],
+      },
+      {
+        title: 'LLM cost & quality',
+        points: [
+          'Optimized LLM context and token usage across production agentic workflows, reducing inference costs by 25% without sacrificing output quality.',
+          'Drove AI/GenAI backend initiatives involving LLM workflows, prompt engineering, RAG, embeddings and vector search.',
+          'Brought AI-assisted data analysis into production backend systems.',
+        ],
+      },
+      {
+        title: 'From model to product',
+        points: [
+          'Designed multi-agent LangGraph workflows that cut clinical documentation effort by 50%.',
+          'Shipped the React/Redux frontend and Node.js APIs used daily by clinicians, owning features end-to-end from UI to backend to deployment.',
+        ],
+      },
+    ],
+    tools: ['LLMs', 'RAG', 'Embeddings', 'Vector Search', 'Pinecone', 'ChromaDB', 'Neo4j', 'LangChain', 'LangGraph', 'Prompt Engineering', 'Python', 'MCP'],
+    from: ['sde2'],
+    medals: ['AI Aware Badge - AI For All'],
+  },
+  {
+    id: 'agentic-ai-developer',
+    role: 'Agentic AI Developer',
+    short: 'Agentic AI',
+    focus: 'LangGraph · MCP · Multi-agent',
+    pitch:
+      'Multi-agent systems built for real users, real compliance constraints and real production load: LangGraph workflows with specialized agents, shipped on a healthcare platform.',
+    proof: [
+      { value: '−50%', label: 'Documentation effort' },
+      { value: '3', label: 'Agent steps orchestrated' },
+      { value: '−25%', label: 'Inference cost' },
+    ],
+    work: [
+      {
+        title: 'Multi-agent workflows',
+        points: [
+          'Designed and shipped multi-agent workflows with LangGraph that cut clinical documentation effort by 50%.',
+          'Orchestrated specialized agents across intake, structuring and review steps.',
+          'Paired the agents with RAG pipelines over vector and graph databases (Pinecone, ChromaDB, Neo4j) to turn clinical conversations into structured, EMR-ready data.',
+        ],
+      },
+      {
+        title: 'Agents in production',
+        points: [
+          'Optimized LLM context and token usage across production agentic workflows, reducing inference costs by 25% without sacrificing output quality.',
+          'Drove AI/GenAI backend initiatives involving LLM workflows, prompt engineering, RAG, embeddings and vector search.',
+          'Built agentic systems to survive real users, real compliance constraints and real production load in healthcare.',
+        ],
+      },
+      {
+        title: 'Backend around the agents',
+        points: [
+          'Architected event-driven workflows with Apache Kafka for asynchronous processing and real-time data exchange.',
+          'Led multi-tenant architecture work: tenant-aware authorization, data isolation, JWT/RBAC/SSO and audit logging for secure cross-system access.',
+        ],
+      },
+    ],
+    tools: ['LangGraph', 'LangChain', 'MCP', 'LLMs', 'RAG', 'Prompt Engineering', 'Pinecone', 'ChromaDB', 'Neo4j', 'Python', 'TypeScript', 'Kafka'],
+    from: ['sde2'],
+    medals: ['AI Aware Badge - AI For All'],
+  },
+  {
+    id: 'genai-engineer',
+    role: 'GenAI Engineer',
+    short: 'GenAI',
+    focus: 'Prompting · RAG · Production LLMs',
+    pitch:
+      'Generative AI taken beyond prototypes: prompt engineering, RAG and cost-aware LLM workflows built to hold up under real users, real data and production constraints.',
+    proof: [
+      { value: '−25%', label: 'LLM inference cost' },
+      { value: '−50%', label: 'Documentation effort' },
+      { value: 'RAG', label: 'Chats into EMR data' },
+    ],
+    work: [
+      {
+        title: 'Prompting & RAG',
+        points: [
+          'Drove AI/GenAI backend initiatives involving LLM workflows, prompt engineering, RAG, embeddings and vector search.',
+          'Built RAG pipelines that transform patient-doctor conversations into EMR-ready structured data, with accurate, compliant output.',
+        ],
+      },
+      {
+        title: 'Production LLMs',
+        points: [
+          'Optimized LLM context and token usage across production workflows, reducing inference costs by 25% without sacrificing output quality.',
+          'Designed multi-agent LangGraph workflows that cut clinical documentation effort by 50%.',
+          'Brought AI-assisted data analysis into production backend systems.',
+        ],
+      },
+      {
+        title: 'Beyond the prototype',
+        points: [
+          'Combined backend engineering fundamentals with modern AI so systems stay reliable, scalable and maintainable under real-world users, data and production constraints.',
+          'Shipped the React/Redux frontend and Node.js APIs used daily by clinicians, owning features end-to-end from UI to backend to deployment.',
+        ],
+      },
+    ],
+    tools: ['Prompt Engineering', 'LLMs', 'RAG', 'Embeddings', 'Vector Search', 'LangChain', 'LangGraph', 'Pinecone', 'ChromaDB', 'Neo4j', 'Python', 'TypeScript'],
+    from: ['sde2'],
+    medals: ['AI Aware Badge - AI For All'],
+  },
+  {
+    id: 'devops-engineer',
+    role: 'DevOps Engineer',
+    short: 'DevOps',
+    focus: 'Terraform · Kubernetes · CI/CD',
+    pitch:
+      'Infrastructure as code, containers and release automation on AWS: Terraform, Kubernetes and CI/CD that keep releases consistent across environments.',
+    proof: [
+      { value: 'IaC', label: 'Terraform on AWS' },
+      { value: '3', label: 'CI/CD tools used' },
+      { value: 'OCI', label: 'Certified DevOps Pro' },
+    ],
+    work: [
+      {
+        title: 'Infrastructure as code',
+        points: [
+          'Owned the Infrastructure as Code strategy, using Terraform to provision and manage AWS backend and serverless infrastructure.',
+          'Built AWS serverless workloads using Lambda, EC2, S3, API Gateway, CloudWatch, ECR and ECS.',
+        ],
+      },
+      {
+        title: 'CI/CD & releases',
+        points: [
+          'Led automation of build and deployment workflows with GitHub Actions, Jenkins and AWS CodePipeline to improve release consistency across environments.',
+          'Implemented CI/CD pipelines on AWS.',
+          'Automated infrastructure and deployment for the healthcare SaaS platform with Terraform, Docker, Kubernetes, Nginx, GitHub Actions and AWS CodePipeline.',
+        ],
+      },
+      {
+        title: 'Containers & runtime',
+        points: [
+          'Containerized backend services with Docker and supported deployments and process management using Kubernetes, Nginx and PM2.',
+          'Built scalable Node.js microservices and deployed them via Kubernetes on AWS.',
+        ],
+      },
+    ],
+    tools: ['Terraform', 'Kubernetes', 'Docker', 'GitHub Actions', 'Jenkins', 'AWS CodePipeline', 'Nginx', 'PM2', 'AWS Lambda', 'ECS', 'ECR', 'CloudWatch'],
+    from: ['sde2', 'sde1', 'intern'],
+    medals: ['Oracle Cloud Infrastructure 2025 Certified DevOps Professional', 'AWS Master certificate', 'Linux'],
+  },
 ];
+
+export const roleById = (id: string | null | undefined): OpenRole | undefined => OPEN_TO.find((r) => r.id === id);
 
 /* ---------------- Missions ---------------- */
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { PLAYER } from '@/data/portfolio';
 import { play } from '@/lib/sound';
@@ -8,7 +8,7 @@ import { Robot } from '@/components/ui/Robot';
 
 const TIPS = [
   'Press 1–5 to jump between tabs.',
-  'Explore every tab to level up.',
+  'Open every tab to complete your recon.',
   'Missions shows the featured project, objective by objective.',
 ];
 
@@ -29,8 +29,13 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
     };
   }, [eyeX, eyeY]);
 
+  // React's dev mode runs effects twice; only play the stinger once.
+  const bootPlayed = useRef(false);
   useEffect(() => {
-    play('boot');
+    if (!bootPlayed.current) {
+      bootPlayed.current = true;
+      play('boot');
+    }
     const t = setInterval(() => setProgress((p) => Math.min(100, p + (p < 70 ? 4 : 2))), 55);
     return () => clearInterval(t);
   }, []);
@@ -57,18 +62,14 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
       exit={{ opacity: 0, scale: 1.03 }}
       transition={{ duration: 0.3 }}
     >
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{ background: 'radial-gradient(50% 60% at 50% 45%, rgba(255,122,0,0.22), transparent 70%)' }}
-      />
+      <div aria-hidden className="load-glow absolute inset-0" />
       <div aria-hidden className="stripes absolute inset-0" />
-      <div aria-hidden className="absolute -right-[8%] top-0 h-full w-[30%] -skew-x-[18deg] bg-gradient-to-l from-gold/[0.10] to-transparent" />
+      <div aria-hidden className="absolute -right-[8%] top-0 h-full w-[30%] -skew-x-[18deg] bg-gradient-to-l from-flame/[0.10] to-transparent" />
 
       <div className="relative flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.3em] text-zinc-400">
         <span>Portfolio · Lobby</span>
         <span className="flex items-center gap-2">
-          <span className="h-2 w-2 animate-dot rounded-full bg-gold" /> Loading
+          <span className="h-2 w-2 animate-dot rounded-full bg-flame" /> Loading
         </span>
       </div>
 
@@ -79,7 +80,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
               mood={progress >= 100 ? 'happy' : 'idle'}
               eyeX={eyeX}
               eyeY={eyeY}
-              className="h-36 w-36 drop-shadow-[0_0_30px_rgba(255,138,0,0.5)] sm:h-48 sm:w-48"
+              className="h-36 w-36 drop-shadow-[0_0_30px_rgb(var(--glow-e)/0.5)] sm:h-48 sm:w-48"
             />
           </div>
         </motion.div>
@@ -97,7 +98,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
         <div className="flex items-center gap-3">
           <div className="h-2 flex-1 -skew-x-12 bg-white/10">
             <div
-              className="h-full bg-gradient-to-r from-gold-hot to-gold shadow-[0_0_12px_rgba(255,160,0,0.8)] transition-[width] duration-100"
+              className="h-full bg-gradient-to-r from-flame-hot to-flame shadow-[0_0_12px_rgb(var(--glow)/0.8)] transition-[width] duration-100"
               style={{ width: `${progress}%` }}
             />
           </div>

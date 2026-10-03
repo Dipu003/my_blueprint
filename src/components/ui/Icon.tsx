@@ -7,6 +7,7 @@ export type IconName =
   | 'lock'
   | 'check'
   | 'arrow'
+  | 'back'
   | 'chevron'
   | 'mail'
   | 'phone'
@@ -23,7 +24,9 @@ export type IconName =
   | 'bolt'
   | 'briefcase'
   | 'graduation'
-  | 'medal';
+  | 'medal'
+  | 'sun'
+  | 'moon';
 
 // 24x24 stroke icons. Paths only, so they inherit color from `currentColor`.
 const PATHS: Record<IconName, string[]> = {
@@ -42,6 +45,7 @@ const PATHS: Record<IconName, string[]> = {
   lock: ['M6 11h12v9H6z', 'M8.5 11V8a3.5 3.5 0 0 1 7 0v3'],
   check: ['M5 12.5l4.5 4.5L19 7.5'],
   arrow: ['M5 12h14', 'M13 6l6 6-6 6'],
+  back: ['M19 12H5', 'M11 6l-6 6 6 6'],
   chevron: ['M6 9l6 6 6-6'],
   mail: ['M3 6h18v12H3z', 'M3 7l9 6 9-6'],
   phone: ['M6 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6L16 12.5l4 1.5v3a2 2 0 0 1-2 2A15 15 0 0 1 4 5a2 2 0 0 1 2-2z'],
@@ -84,6 +88,18 @@ const PATHS: Record<IconName, string[]> = {
   briefcase: ['M4 8h16v11H4z', 'M9 8V5h6v3', 'M4 13h16'],
   graduation: ['M2 9l10-5 10 5-10 5z', 'M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5'],
   medal: ['M12 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10z', 'M8.5 12.5 7 21l5-3 5 3-1.5-8.5', 'M10 8l1.5 1.5L14.5 6.5'],
+  sun: [
+    'M12 7.8a4.2 4.2 0 1 0 0 8.4 4.2 4.2 0 0 0 0-8.4z',
+    'M12 2.5v2.2',
+    'M12 19.3v2.2',
+    'M2.5 12h2.2',
+    'M19.3 12h2.2',
+    'M5.3 5.3l1.6 1.6',
+    'M17.1 17.1l1.6 1.6',
+    'M18.7 5.3l-1.6 1.6',
+    'M6.9 17.1l-1.6 1.6',
+  ],
+  moon: ['M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'],
 };
 
 export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; className?: string }) {

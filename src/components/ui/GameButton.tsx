@@ -26,7 +26,7 @@ export function GameButton({ label, sub, variant = 'primary', icon, onClick, hre
       <Icon name="arrow" className="h-5 w-5 shrink-0 opacity-80" />
     </>
   );
-  const common = { className: cls, onMouseEnter: () => play('hover') };
+  const common = { className: cls };
 
   return (
     <span className={`inline-block ${variant === 'primary' ? 'btn-glow' : ''}`}>
