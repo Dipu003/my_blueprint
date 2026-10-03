@@ -1,0 +1,374 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gold: #ffb400;
+  --hot: #ff7a00;
+  --ink: #0a0b0d;
+}
+
+html,
+body {
+  background: #0a0b0d;
+  color: #e6e7ea;
+  height: 100%;
+  overflow: hidden;
+  /* Amber tactical arrow instead of the default pointer / crosshair. */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M3 3l19 8-8.5 2.5L11 23z' fill='%23ffb400' stroke='%230a0b0d' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 3 3, auto;
+}
+
+/* White arrow with a hot-orange edge over anything clickable. */
+a,
+button,
+[role='button'],
+[role='tab'] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M3 3l19 8-8.5 2.5L11 23z' fill='%23ffffff' stroke='%23ff7a00' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 3 3, pointer;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+@layer components {
+  /* ---------- Signature shapes ---------- */
+  /* Parallelogram: tabs, buttons, chips. */
+  .para {
+    clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  }
+  /* Two cut corners: avatars, small tiles. */
+  .cut {
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+
+  /* ---------- Panels ---------- */
+  .panel {
+    position: relative;
+    background: linear-gradient(160deg, rgba(34, 35, 41, 0.92), rgba(16, 17, 20, 0.94));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    transition: box-shadow 0.18s, transform 0.18s;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 64px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .panel:hover,
+  .panel[data-active='true'] {
+    box-shadow: inset 0 0 0 1px rgba(255, 180, 0, 0.55), inset 0 0 44px rgba(255, 150, 0, 0.08);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-start,
+  .btn-ghost {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    overflow: hidden;
+    padding: 0.8rem 2.75rem 0.8rem 2.25rem;
+    font-family: var(--font-display), sans-serif;
+    font-style: italic;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+    transition: filter 0.15s, transform 0.15s, background 0.15s, color 0.15s;
+  }
+  .btn-start {
+    background: linear-gradient(180deg, #ffc21f 0%, #ff8a00 55%, #ff6a00 100%);
+    color: #17110a;
+  }
+  /* Moving shine, like the lobby "Start" button. */
+  .btn-start::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 36%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transform: skewX(-20deg);
+    animation: shine 3.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .btn-start:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f3f4f6;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 180, 0, 0.18);
+    color: var(--gold);
+  }
+  .btn-start:active,
+  .btn-ghost:active {
+    transform: translateY(1px) scale(0.985);
+    filter: brightness(0.95);
+  }
+  .btn-glow {
+    filter: drop-shadow(0 0 14px rgba(255, 138, 0, 0.45));
+  }
+  .btn-label {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .btn-sub {
+    margin-top: 0.3rem;
+    font-family: var(--font-ui), sans-serif;
+    font-size: 0.68rem;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    opacity: 0.75;
+  }
+
+  /* Clipped elements hide the normal outline, so show focus inside the shape. */
+  .para:focus-visible,
+  .cut:focus-visible,
+  .panel:focus-visible,
+  .btn-start:focus-visible,
+  .btn-ghost:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--gold);
+  }
+
+  /* ---------- Interactive tiles (skills, chips, rows, cards) ---------- */
+  /* Amber fill sweeps in, a light flash crosses it, an edge lights up and the tile slides. */
+  .tile {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s, color 0.2s,
+      box-shadow 0.2s, filter 0.2s;
+  }
+  .tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, rgba(255, 180, 0, 0.34), rgba(255, 122, 0, 0.1) 70%, transparent);
+    transform: translateX(-101%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+  }
+  .tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40%;
+    width: 28%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+    transform: skewX(-20deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tile:hover,
+  .tile:focus-visible {
+    transform: translateX(3px);
+    color: #ffd36b;
+    box-shadow: inset 3px 0 0 #ffb400, inset 0 0 0 1px rgba(255, 180, 0, 0.4);
+  }
+  .tile:hover::before,
+  .tile:focus-visible::before {
+    transform: translateX(0);
+  }
+  .tile:hover::after {
+    animation: tile-shine 0.7s ease-out;
+  }
+  .tile:active {
+    transform: translateX(3px) scale(0.985);
+    filter: brightness(1.15);
+  }
+  .tile-num {
+    color: #ffb400;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .tile:hover .tile-num {
+    color: #fff;
+    transform: scale(1.15);
+  }
+  /* Opt back in to text selection for things people copy (email, phone). */
+  .selectable {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* ---------- Patterns ---------- */
+  .stripes {
+    background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 16px);
+  }
+  .hazard {
+    background-image: repeating-linear-gradient(135deg, #ffb400 0 10px, #17130a 10px 20px);
+  }
+}
+
+@keyframes shine {
+  0%, 55% { left: -60%; }
+  100% { left: 140%; }
+}
+@keyframes tile-shine {
+  0% { left: -40%; opacity: 0.9; }
+  100% { left: 130%; opacity: 0; }
+}
+
+/* Buttons and tabs are UI chrome, not text: don't select them on click or drag. */
+button,
+.para,
+.btn-start,
+.btn-ghost {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---------- Backdrop ---------- */
+.ember {
+  position: absolute;
+  bottom: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd36b, #ff7a00 60%, transparent 72%);
+  opacity: 0;
+  animation: rise linear infinite;
+}
+@keyframes rise {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.9; }
+  100% { transform: translate(var(--dx), -105vh); opacity: 0; }
+}
+/* Full name, set diagonally behind everything. */
+.watermark {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 190, 60, 0.14);
+  background: linear-gradient(90deg, rgba(255, 180, 0, 0), rgba(255, 150, 0, 0.1) 50%, rgba(255, 180, 0, 0));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Radar sweep (lobby decoration). */
+@keyframes radar-spin {
+  to { transform: rotate(360deg); }
+}
+.radar-sweep {
+  background: conic-gradient(from 0deg, transparent 0 72%, rgba(255, 180, 0, 0.38) 100%);
+  animation: radar-spin 5s linear infinite;
+  -webkit-mask: radial-gradient(circle, #000 0 69%, transparent 70%);
+  mask: radial-gradient(circle, #000 0 69%, transparent 70%);
+}
+@keyframes blip {
+  0%, 100% { opacity: 0.25; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+.radar-blip {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blip 2.4s ease-in-out infinite;
+}
+
+/* ---------- Robot companion ---------- */
+.robot-eye {
+  filter: drop-shadow(0 0 2.5px #ffb400);
+}
+@keyframes robot-bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px); }
+}
+.robot-bob {
+  animation: robot-bob 1.6s ease-in-out infinite alternate;
+}
+@keyframes robot-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+.robot-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: robot-blink 4.2s infinite;
+}
+@keyframes robot-pulse {
+  50% { opacity: 0.3; }
+}
+.robot-pulse,
+.robot-tip {
+  animation: robot-pulse 1.4s ease-in-out infinite;
+}
+@keyframes robot-flame {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.4); }
+}
+.robot-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: robot-flame 0.35s ease-in-out infinite;
+}
+@keyframes robot-wave {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(-65deg); }
+}
+.robot-wave {
+  transform-box: fill-box;
+  transform-origin: 50% 10%;
+  animation: robot-wave 0.5s ease-in-out infinite;
+}
+
+/* ---------- Click feedback: objective-style diamond ping ---------- */
+.ping {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+  z-index: 70;
+  animation: ping-out 0.45s ease-out forwards;
+}
+.ping::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: #fff;
+}
+@keyframes ping-out {
+  0% { opacity: 1; transform: rotate(45deg) scale(0.4); }
+  100% { opacity: 0; transform: rotate(45deg) scale(2.2); }
+}
+
+/* ---------- Scrollbar ---------- */
+.game-scroll::-webkit-scrollbar { width: 6px; }
+.game-scroll::-webkit-scrollbar-thumb { background: #3a3b42; }
+.game-scroll::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ember,
+  .btn-start::after,
+  .tile:hover::after,
+  .ping,
+  .radar-sweep,
+  .radar-blip,
+  .robot-bob,
+  .robot-blink,
+  .robot-pulse,
+  .robot-tip,
+  .robot-flame,
+  .robot-wave {
+    animation: none !important;
+  }
+  .ember { display: none; }
+}
