@@ -1,4 +1,6 @@
 import { PLAYER } from '@/data/portfolio';
+import { Depth } from '@/components/hud/Depth';
+import { Scenery } from '@/components/hud/Scenery';
 import { Spotlight } from '@/components/hud/Spotlight';
 
 // Deterministic values so server and client render identically (no Math.random).
@@ -35,15 +37,18 @@ const CONTOURS = [
 ];
 
 /**
- * Fixed background. Dark: amber glow, hex field, slanted light streaks, a pointer-following
- * spotlight, rising embers and the full name set diagonally. Light: the same layers re-coloured
- * (cool blue glows, a faint blueprint grid), plus a topographic contour map (see globals.css).
+ * Fixed background. Dark: a night landscape (stars, mountains, pines, ice crystals: see Scenery), blue glow,
+ * hex field, slanted light streaks, a pointer-following spotlight, rising embers and the full name set
+ * diagonally. Light: the same layers re-coloured (cool blue glows, a faint blueprint grid), plus a
+ * topographic contour map (see globals.css).
  */
 export function Backdrop() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-ink">
       <div className="stripes absolute inset-0" />
 
+      {/* far layers (hex field, contours) drift against the pointer, near ones (streaks, name) with it */}
+      <Depth depth={-7} className="absolute -inset-8">
       <svg
         className="bd-hex absolute inset-0 h-full w-full"
         style={{
@@ -59,27 +64,33 @@ export function Backdrop() {
         </defs>
         <rect width="100%" height="100%" fill="url(#hex-field)" />
       </svg>
+      </Depth>
 
+      <Depth depth={-11} className="absolute -inset-8">
       <svg className="bd-contour absolute inset-0 h-full w-full" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" fill="none">
         {CONTOURS.map((c, i) => (
           <path key={i} d={c.d} stroke="currentColor" strokeWidth={c.major ? 1.8 : 1} strokeLinejoin="round" />
         ))}
       </svg>
+      </Depth>
 
       <div className="bd-glow absolute inset-0" />
+      <Scenery />
       <div className="absolute -right-[10%] top-0 h-full w-[38%] -skew-x-[18deg] bg-gradient-to-l from-flame/[0.10] via-flame/[0.03] to-transparent" />
       <div className="bd-streak absolute right-[24%] top-0 h-full w-[5%] -skew-x-[18deg] bg-white/[0.025]" />
       <div className="bd-streak absolute -left-[6%] bottom-0 h-[45%] w-[40%] -skew-x-[18deg] bg-gradient-to-r from-white/[0.04] to-transparent" />
 
       {/* Full name, diagonal, fully inside the viewport at every width. */}
+      <Depth depth={20} className="absolute inset-0">
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[18deg] opacity-50 sm:opacity-100">
         <div
-          className="watermark select-none whitespace-nowrap pr-4 font-display font-extrabold italic uppercase leading-none"
-          style={{ fontSize: 'min(11vw, 10.5rem)' }}
+          className="watermark select-none whitespace-nowrap pr-4 font-display uppercase leading-none"
+          style={{ fontSize: 'min(5.6vw, 5.2rem)' }}
         >
           {PLAYER.name}
         </div>
       </div>
+      </Depth>
 
       <Spotlight />
 

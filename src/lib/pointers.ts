@@ -1,7 +1,8 @@
 // Game pointers: five angular, faceted designs with recessed windows, bright faces and accent shards
 // (the artwork is in pointer-shapes.ts). Each is coloured for both themes:
-//   light: the reference colours, a blue body with cyan faces and yellow shards;
-//   dark:  the same artwork with the colours swapped, an orange body with yellow faces and blue shards.
+//   light: the reference colours, a blue body with cyan faces, with orchid shards (the reference's yellow
+//          did not suit the violet site);
+//   dark:  the same artwork in the dark theme's palette: a violet body with ice-blue faces and orchid shards.
 // The same design is used everywhere on the page, the tabs included; over buttons, links, tiles and
 // tabs ("hot") it only lights up, with the same colours a little brighter and a stronger glow.
 // PointerRotator publishes one design at a time as the --ptr-* custom properties used in globals.css.
@@ -31,7 +32,7 @@ const PALETTES: Record<PointerTheme, Record<PointerRole, Pal>> = {
       lo: '#0f6fdc',
       deep: ['#0b66ea', '#0a4fc8'],
       bright: ['#8afff3', '#14f4ff'],
-      acc: ['#f5f17e', '#fbcb3c'],
+      acc: ['#ecc8ff', '#b65cf0'],
       line: '#0a1a3d',
       glow: '#38bdf8',
     },
@@ -41,31 +42,31 @@ const PALETTES: Record<PointerTheme, Record<PointerRole, Pal>> = {
       lo: '#2a80ee',
       deep: ['#2f7ff2', '#1f62d4'],
       bright: ['#c4fff9', '#4cf6ff'],
-      acc: ['#fff7a0', '#ffd94a'],
+      acc: ['#f5dcff', '#c97cf7'],
       line: '#0a1a3d',
       glow: '#67d4ff',
     },
   },
   dark: {
     idle: {
-      hi: '#ffd27a',
-      mid: '#ff9a1c',
-      lo: '#f06000',
-      deep: ['#e85c0a', '#c44400'],
-      bright: ['#fff4a8', '#ffc61a'],
-      acc: ['#8ad0ff', '#2f86f0'],
-      line: '#120a03',
-      glow: '#ffb400',
+      hi: '#d9ccff',
+      mid: '#9b7bff',
+      lo: '#6a45e8',
+      deep: ['#5a38d6', '#43279f'],
+      bright: ['#d6f7ff', '#7fdcff'],
+      acc: ['#f3d6ff', '#d98bff'],
+      line: '#0a0718',
+      glow: '#9b7bff',
     },
     hot: {
-      hi: '#fff0b0',
-      mid: '#ffc03a',
-      lo: '#ff8a1c',
-      deep: ['#f77a1a', '#d85a0a'],
-      bright: ['#fffbd6', '#ffe45c'],
-      acc: ['#a8dcff', '#4a9af4'],
-      line: '#120a03',
-      glow: '#ffd23a',
+      hi: '#efe8ff',
+      mid: '#b9a2ff',
+      lo: '#8463f5',
+      deep: ['#7756ee', '#5a3fcf'],
+      bright: ['#e9fbff', '#a6e9ff'],
+      acc: ['#f9e6ff', '#e6a8ff'],
+      line: '#0a0718',
+      glow: '#c7b5ff',
     },
   },
 };

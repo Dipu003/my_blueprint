@@ -15,11 +15,16 @@ const DIMS: Record<Kind, { w: number; h: number }> = {
 };
 // Listed as an effect dependency below so the pointer listener re-subscribes whenever this
 // module is re-evaluated (hot reload in dev); otherwise an open tab keeps the stale listener.
-const SELECTORS = { clickable: 'button, a, [role="tab"]', tile: '.tile' };
+const SELECTORS = { clickable: 'button, a, [role="tab"]', tile: '.tile', box: '.panel' };
 
 // How long it keeps standing at an element after the pointer leaves it. Tiles sit a few pixels
 // apart, so crossing the gap between two of them must not make it flip to idle and back.
 const PERCH_GRACE_MS = 140;
+// On a box: how long he waves after landing, how far his disc sinks onto its top edge, and how far
+// along a wide box the pointer may wander before he hops after it.
+const GREET_MS = 1600;
+const BOX_FEET_PX = 9;
+const BOX_FOLLOW_PX = 260;
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
@@ -28,6 +33,8 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
  * - Over a button or link, the robot hops over, stands beside it and waves.
  * - Over a tile (skills, chips, cards), it turns into a small recon orb that hovers beside the
  *   tile and scans it with a beam.
+ * - Over a box (a panel), he hops up onto its top edge, waves, then stands there watching the
+ *   pointer: he presents the box instead of trailing over the text being read.
  * - Hidden over the scrollbar and while scrolling.
  * Mouse only: hidden on touch screens and when reduced motion is requested.
  *
@@ -77,15 +84,53 @@ export function Companion() {
     let pending: { x: number; y: number; target: Element | null } | null = null;
     let frame = 0;
     let perched: Element | null = null;
+    let onBox = false; // is the perch a box (he stands on top of it) rather than a button or tile (beside it)?
+    let standX = 0; // where he stands on the box (his centre)
+    let greeted: Element | null = null; // the box he last waved from: no second wave for coming back to it
     let scrolling = false;
     let scrollTimer: ReturnType<typeof setTimeout> | undefined;
     let idleTimer: ReturnType<typeof setTimeout> | undefined;
+    let greetTimer: ReturnType<typeof setTimeout> | undefined;
 
     const follow = () => {
       const d = DIMS.robot;
       dimsRef.current = d;
       tx.set(clamp(last.x + 16, 2, window.innerWidth - d.w - 2));
       ty.set(clamp(last.y + 14, 2, window.innerHeight - d.h - 2));
+    };
+
+    /** Up onto the top edge of a box, above where the pointer is. */
+    const standOn = (box: Element, cx: number) => {
+      const d = DIMS.robot;
+      dimsRef.current = d;
+      const r = box.getBoundingClientRect();
+      const ceiling = mainEl?.getBoundingClientRect().top ?? 0; // above this are the top bar and the tabs
+      let left = clamp(cx - d.w / 2, r.left + 14, Math.max(r.left + 14, r.right - d.w - 14));
+      let top = r.top - d.h + BOX_FEET_PX;
+      if (top < ceiling - 14) {
+        // The box's top edge has scrolled away: he keeps to its right-hand edge (mostly in the gap beside
+        // it), at the top of what is left of it, clear of the lines being read.
+        left = r.right - 16;
+        top = ceiling + 6;
+      }
+      left = clamp(left, 2, window.innerWidth - d.w - 2);
+      perched = box;
+      onBox = true;
+      standX = left + d.w / 2;
+      tx.set(left);
+      ty.set(clamp(top, 2, window.innerHeight - d.h - 2));
+      clearTimeout(greetTimer);
+      if (greeted !== box) {
+        // a new box: he waves from it for a moment, then just watches
+        greeted = box;
+        apply({ kind: 'robot', mood: 'happy' });
+        greetTimer = setTimeout(() => {
+          if (perched === box) apply({ mood: 'idle' });
+        }, GREET_MS);
+      } else {
+        apply({ kind: 'robot', mood: 'idle' });
+      }
+      void hop.start({ y: [0, -11, 0], transition: { duration: 0.36, ease: 'easeOut' } });
     };
 
     const process = () => {
@@ -106,6 +151,9 @@ export function Companion() {
       const btn = target?.closest(SELECTORS.clickable) as HTMLButtonElement | null;
       const tile = btn ? null : (target?.closest(SELECTORS.tile) as HTMLElement | null);
       const el = btn && !btn.disabled ? btn : tile;
+      // A box counts only inside the page itself: a dialog or a menu has no room above it.
+      const panel = el ? null : (target?.closest(SELECTORS.box) ?? null);
+      const box = panel && mainEl?.contains(panel) ? panel : null;
 
       if (el) {
         clearTimeout(idleTimer);
@@ -113,6 +161,8 @@ export function Companion() {
         if (perched === el) return; // already standing here: nothing to measure or move
 
         perched = el;
+        onBox = false;
+        clearTimeout(greetTimer);
         const next: Kind = tile ? 'orb' : 'robot';
         const d = DIMS[next];
         dimsRef.current = d;
@@ -125,17 +175,28 @@ export function Companion() {
         ty.set(clamp(r.top + r.height / 2 - d.h / 2, 2, window.innerHeight - d.h - 2));
         apply({ kind: next, facing: left ? 'right' : 'left', mood: 'happy' });
         void hop.start({ y: [0, -11, 0], transition: { duration: 0.36, ease: 'easeOut' } });
+      } else if (box && (!perched || onBox)) {
+        // Inside a box: he stands on top of it instead of trailing the pointer over its text. He stays
+        // put while the pointer moves about in the box (on a wide one he hops along once it is far off).
+        clearTimeout(idleTimer);
+        idleTimer = undefined;
+        if (perched === box && Math.abs(cx - standX) < BOX_FOLLOW_PX) return;
+        standOn(box, cx);
       } else if (perched) {
-        // Left the element. Hold the perch briefly in case the pointer is only crossing a gap.
+        // Left a button, a tile or a box. Hold the perch briefly in case the pointer is only crossing a
+        // gap, then go by what is under the pointer now: a box to stand on, or nothing (trail again).
         if (idleTimer === undefined) {
           idleTimer = setTimeout(() => {
             idleTimer = undefined;
             perched = null;
-            apply({ kind: 'robot', mood: 'idle' });
-            follow();
+            if (!pending) pending = { x: last.x, y: last.y, target: document.elementFromPoint(last.x, last.y) };
+            process();
           }, PERCH_GRACE_MS);
         }
       } else {
+        greeted = null;
+        clearTimeout(greetTimer);
+        apply({ kind: 'robot', mood: 'idle' });
         follow();
       }
     };
@@ -177,6 +238,7 @@ export function Companion() {
       cancelAnimationFrame(frame);
       clearTimeout(scrollTimer);
       clearTimeout(idleTimer);
+      clearTimeout(greetTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- SELECTORS is intentional (see above)
   }, [px, py, tx, ty, hop, SELECTORS]);

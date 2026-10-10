@@ -6,123 +6,204 @@
    THEME TOKENS
    Every colour that has to change between themes is an "R G B" triplet here, so Tailwind
    (see tailwind.config.ts) and plain CSS can both use it with an alpha: rgb(var(--gold) / .4).
-   Dark is the default and is exactly the original look; the light theme only overrides values.
+   Dark ("Night") is the default; the light theme ("Day") only overrides values.
    The theme is switched by <html data-theme="dark|light"> (set before first paint by the inline
    script in layout.tsx, changed at runtime by ThemeProvider).
+   Look: a fantasy game-studio site in one colour family. Neutral near-black surfaces (not navy), violet for
+   fills and glows, soft lilac for labels and icons, orchid for edges and highlights, a violet-to-orchid call
+   to action, and ice-blue kept for the hero and his crystals. (No gold: he found it did not suit the site.)
    ===================================================================================== */
 :root {
   color-scheme: dark;
 
-  /* surfaces */
-  --ink: 10 11 13;
-  --ink-2: 17 18 21;
-  --ink-3: 24 25 29;
-  --ink-4: 33 34 39;
+  /* surfaces: neutral near-black with the faintest violet */
+  --ink: 10 11 17;
+  --ink-2: 16 17 27;
+  --ink-3: 24 25 40;
+  --ink-4: 36 37 58;
 
-  /* "foreground": what text and overlays are made of. White on dark, ink on light. */
+  /* "foreground": what text and overlays are made of. White on dark, near-black ink on light. */
   --fg: 255 255 255;
-  --black: 0 0 0; /* translucent scrims */
-  --z100: 244 244 245;
-  --z200: 228 228 231;
-  --z300: 212 212 216;
-  --z400: 161 161 170;
-  --z500: 113 113 122;
-  --z600: 82 82 91;
-  --body: 230 231 234;
+  --black: 4 4 10; /* translucent scrims */
+  --z100: 246 245 252;
+  --z200: 229 227 241;
+  --z300: 200 198 218;
+  --z400: 162 160 186;
+  --z500: 124 122 150;
+  --z600: 92 90 118;
+  --body: 214 212 230;
 
-  /* accent: `gold` for text/icons/lines, `flame` for fills */
-  --gold: 255 180 0;
-  --gold-soft: 255 211 107;
-  --flame: 255 180 0;
-  --flame-hot: 255 122 0;
-  --on-gold: 23 17 10; /* text on a flame fill */
-  --on-ok: 10 11 13;
-  --ok: 95 209 106;
-  --danger: 255 74 61;
+  /* accent: `gold` for text/icons/lines (soft lilac), `flame` for fills (violet), `hl` and `hl-2` for hover
+     glows (violet) and edges (orchid). The names are from the original amber theme. */
+  --gold: 196 162 255;
+  --gold-soft: 228 214 255;
+  --flame: 140 102 255;
+  --flame-hot: 102 66 236;
+  --on-gold: 255 255 255; /* text on a violet fill */
+  --on-ok: 3 20 14;
+  --ok: 52 224 160;
+  --danger: 255 92 110;
+  --star: 214 180 255;
+
+  --hl: 148 108 255; /* violet: hover fills, rings, glows */
+  --hl-2: 214 128 255; /* orchid: edges and bars */
+  --hl-line: 130 112 210; /* thin lines and rings (muted violet) */
+  --hl-text: 255 255 255; /* text of a hovered tile */
+
+  /* the main call-to-action button: orchid to deep violet with white lettering */
+  --cta-a: 214 128 255;
+  --cta-b: 158 92 250;
+  --cta-c: 110 56 232;
+  --cta-slab-a: 72 30 150;
+  --cta-slab-b: 40 16 96;
+  --cta-glow: 168 100 255;
+  --cta-ink: 255 255 255;
 
   /* misc */
-  --scroll-thumb: 58 59 66;
-  --blip: 255 211 107;
+  --scroll-thumb: 64 62 98;
+  --blip: 214 160 255;
+  --ember-a: 240 230 255;
+  --ember-b: 176 120 255;
 
   /* glows around bars/banners, the big hero-name gradient and the DS emblem */
-  --glow: 255 160 0;
-  --glow-b: 255 180 0;
-  --glow-e: 255 138 0;
-  --hero-a: 255 180 0;
-  --hero-b: 255 122 0;
-  --emb-a: 255 194 31;
-  --emb-b: 255 106 0;
-  --emb-text: 10 11 13;
+  --glow: 140 102 255;
+  --glow-b: 200 140 255;
+  --glow-e: 150 110 255;
+  --hero-a: 196 172 255;
+  --hero-b: 230 124 250;
+  --emb-a: 206 150 255;
+  --emb-b: 118 60 235;
+  --emb-text: 255 255 255;
 
-  /* mascots (robot, orb): steel bodies with amber glow */
-  --m-a: 255 180 0; /* outlines, ears, hands, rotors */
-  --m-eye: 255 180 0; /* glowing parts: eyes, chest light, antenna tip, canopy, lens */
-  --m-steel-a: 59 61 71;
-  --m-steel-b: 26 27 32;
-  --m-limb: 44 46 54;
-  --m-metal: 138 141 153;
-  --m-visor: 10 11 13;
-  --m-fl-a: 255 211 107; /* flame / scan-beam core */
-  --m-fl-b: 255 122 0; /* flame / scan-beam edge */
-  --m-arm: 74 77 88;
+  /* the scenery behind the page: mountains, pines, stars and mist (see Scenery) */
+  --land-far: 120 100 200;
+  --land-mid: 92 74 170;
+  --land-near: 52 42 112;
+  --land-star: 236 232 255;
+  --aur-1: 140 110 255; /* northern lights: violet, teal, orchid */
+  --aur-2: 70 220 210;
+  --aur-3: 214 128 255;
+  --aur-k: 0.55; /* how strong they are */
+
+  /* mascots (the little hero and the recon drone): violet steel with lilac trim and an ice glow */
+  --m-a: 206 172 255; /* outlines, hands, trims */
+  --m-eye: 130 226 255; /* glowing parts: eyes, crystal, lens */
+  --m-steel-a: 66 62 104;
+  --m-steel-b: 28 26 48;
+  --m-limb: 46 44 78;
+  --m-metal: 176 170 210;
+  --m-visor: 8 8 18;
+  --m-fl-a: 236 224 255; /* glow / scan-beam core */
+  --m-fl-b: 150 110 255; /* glow / scan-beam edge */
+  --m-arm: 76 72 118;
   --shadow: 0 0 0; /* drop shadow under floating mascots */
 }
 
-/* LIGHT THEME "FROST": a cool, crisp palette. Ice-white surfaces, deep navy type and a single
-   blue accent (text/lines in a deep blue, fills in a brighter blue). The mascots (robot, orb)
-   get slate bodies with blue glow and pop against it. To try another accent colour, change only the
-   --gold / --gold-soft / --flame / --flame-hot / --glow* / --hero-* / --emb-* / --blip values. */
+/* LIGHT THEME "DAY": a soft, cool-neutral page. Off-white surfaces with a hint of lavender, near-black
+   type, violet fills, deep purple labels and the same violet-to-orchid call to action as the dark theme. */
 :root[data-theme='light'] {
   color-scheme: light;
 
-  --ink: 241 245 250; /* page */
-  --ink-2: 232 238 246;
-  --ink-3: 221 229 240;
-  --ink-4: 207 217 232;
+  --ink: 247 246 251;
+  --ink-2: 239 237 246;
+  --ink-3: 229 226 239;
+  --ink-4: 214 210 229;
 
-  --fg: 11 18 32; /* deep navy ink */
+  --fg: 22 19 38;
   --black: 255 255 255;
-  --z100: 11 18 32;
-  --z200: 26 38 58;
-  --z300: 45 60 84;
-  --z400: 71 85 105;
-  --z500: 86 98 119;
-  --z600: 118 130 150;
-  --body: 15 26 43;
+  --z100: 22 19 38;
+  --z200: 40 36 62;
+  --z300: 62 57 88;
+  --z400: 90 85 116;
+  --z500: 106 101 132;
+  --z600: 138 133 160;
+  --body: 30 27 48;
 
-  --gold: 29 78 216; /* deep blue for text, icons, thin lines */
-  --gold-soft: 30 58 138;
-  --flame: 59 130 246; /* brighter blue for fills: bars, pills, buttons */
-  --flame-hot: 29 78 216;
-  --on-gold: 255 255 255; /* text on a blue fill */
+  --gold: 112 48 208;
+  --gold-soft: 76 28 150;
+  --flame: 112 76 236;
+  --flame-hot: 86 52 206;
+  --on-gold: 255 255 255;
   --on-ok: 255 255 255;
   --ok: 21 128 61;
   --danger: 220 38 38;
+  --star: 140 70 230;
 
-  --scroll-thumb: 184 196 214;
-  --blip: 14 165 233;
+  --hl: 124 92 246;
+  --hl-2: 168 72 230;
+  --hl-line: 124 104 210;
+  --hl-text: 64 38 160;
 
-  --glow: 37 99 235;
-  --glow-b: 59 130 246;
-  --glow-e: 37 99 235;
-  --hero-a: 29 78 216; /* "SENAPATI": blue to sky */
-  --hero-b: 14 165 233;
-  --emb-a: 96 165 250;
-  --emb-b: 29 78 216;
+  --cta-a: 200 120 255;
+  --cta-b: 146 84 246;
+  --cta-c: 104 52 226;
+  --cta-slab-a: 70 30 150;
+  --cta-slab-b: 40 16 96;
+  --cta-glow: 150 90 245;
+  --cta-ink: 255 255 255;
+
+  --scroll-thumb: 200 194 218;
+  --blip: 124 92 246;
+  --ember-a: 236 224 255;
+  --ember-b: 160 110 245;
+
+  --glow: 112 76 236;
+  --glow-b: 168 72 230;
+  --glow-e: 124 92 246;
+  --hero-a: 98 64 230;
+  --hero-b: 190 60 220;
+  --emb-a: 190 140 255;
+  --emb-b: 110 56 230;
   --emb-text: 255 255 255;
 
-  /* mascots: dark slate bodies with blue / sky glow, so they stand out on the ice-white page */
-  --m-a: 59 130 246;
+  --land-far: 190 180 225;
+  --land-mid: 160 148 210;
+  --land-near: 128 114 190;
+  --land-star: 120 100 200;
+  --aur-1: 150 120 250;
+  --aur-2: 90 200 230;
+  --aur-3: 210 140 250;
+  --aur-k: 0.28;
+
+  --m-a: 124 92 246;
   --m-eye: 56 189 248;
-  --m-steel-a: 71 85 105;
-  --m-steel-b: 30 41 59;
-  --m-limb: 51 65 85;
-  --m-metal: 148 163 184;
-  --m-visor: 8 14 28;
-  --m-fl-a: 186 230 253;
-  --m-fl-b: 37 99 235;
-  --m-arm: 100 116 139;
-  --shadow: 15 30 70;
+  --m-steel-a: 92 86 130;
+  --m-steel-b: 40 36 66;
+  --m-limb: 70 66 104;
+  --m-metal: 160 154 190;
+  --m-visor: 10 8 24;
+  --m-fl-a: 236 222 255;
+  --m-fl-b: 124 92 246;
+  --m-arm: 110 104 150;
+  --shadow: 30 20 70;
+}
+
+/* Big screens: everything is sized in rem, so raising the root size scales the whole layout (type, spacing and
+   the width of the content column) instead of leaving a small column in the middle of a large monitor. */
+@media (min-width: 1800px) {
+  html {
+    font-size: 17px;
+  }
+}
+@media (min-width: 2000px) {
+  html {
+    font-size: 18.5px;
+  }
+}
+@media (min-width: 2300px) {
+  html {
+    font-size: 20.5px;
+  }
+}
+@media (min-width: 2700px) {
+  html {
+    font-size: 23px;
+  }
+}
+@media (min-width: 3400px) {
+  html {
+    font-size: 28px;
+  }
 }
 
 html,
@@ -134,8 +215,7 @@ body {
   cursor: var(--ptr-idle);
 }
 
-/* Game pointers. The five designs (blue with yellow shards on the light theme, the same artwork
-   with the colours swapped, orange with blue shards, on the dark theme) are drawn in
+/* Game pointers. The five designs (coloured per theme, see the palettes in src/lib/pointers.ts) are drawn in
    src/lib/pointers.ts; PointerRotator publishes the current one as --ptr-<role>-<theme> every
    20-30 seconds. Until it has run (or on touch screens) the system cursors apply. */
 :root {
@@ -180,8 +260,8 @@ button,
   /* ---------- Panels ---------- */
   .panel {
     position: relative;
-    background: linear-gradient(160deg, rgba(34, 35, 41, 0.92), rgba(16, 17, 20, 0.94));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    background: linear-gradient(160deg, rgb(var(--ink-4) / 0.9), rgb(var(--ink-2) / 0.95));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(var(--hl-line) / 0.16);
     clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
   }
   .panel::before {
@@ -199,7 +279,7 @@ button,
     content: '';
     position: absolute;
     inset: 0;
-    box-shadow: inset 0 0 0 1px rgba(255, 180, 0, 0.55), inset 0 0 44px rgba(255, 150, 0, 0.08);
+    box-shadow: inset 0 0 0 1px rgb(var(--hl-line) / 0.6), inset 0 0 44px rgb(var(--hl) / 0.16);
     opacity: 0;
     transition: opacity 0.18s;
     pointer-events: none;
@@ -219,10 +299,10 @@ button,
     overflow: hidden;
     padding: 0.8rem 2.75rem 0.8rem 2.25rem;
     font-family: var(--font-display), sans-serif;
-    font-style: italic;
-    font-weight: 800;
+    font-style: normal;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
     isolation: isolate;
     transition: background-color 0.3s, color 0.3s;
@@ -267,8 +347,8 @@ button,
     transform: scale(0.97);
   }
   .btn-start {
-    background: linear-gradient(180deg, #ffc21f 0%, #ff8a00 55%, #ff6a00 100%);
-    color: #17110a;
+    background: linear-gradient(180deg, rgb(var(--cta-a)) 0%, rgb(var(--cta-b)) 55%, rgb(var(--cta-c)) 100%);
+    color: rgb(var(--cta-ink));
   }
   /* Moving shine, like the lobby "Start" button. */
   .btn-start::after {
@@ -284,16 +364,16 @@ button,
     pointer-events: none;
   }
   .btn-ghost {
-    background: rgba(255, 255, 255, 0.08);
-    color: #f3f4f6;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    background: rgb(var(--fg) / 0.08);
+    color: rgb(var(--fg));
+    box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.16);
   }
   .btn-ghost:hover {
-    background: rgba(255, 180, 0, 0.18);
-    color: rgb(var(--gold));
+    background: rgb(var(--hl) / 0.24);
+    color: rgb(var(--hl-text));
   }
   .btn-ghost::before {
-    background: rgba(255, 180, 0, 0.1);
+    background: rgb(var(--hl) / 0.12);
   }
   /* Static glow behind the Start button. (A drop-shadow filter here re-rasterised every frame
      while the shine animated inside it.) */
@@ -304,14 +384,14 @@ button,
     content: '';
     position: absolute;
     inset: -16px -22px;
-    background: radial-gradient(closest-side, rgba(255, 138, 0, 0.42), transparent);
+    background: radial-gradient(closest-side, rgb(var(--cta-glow) / 0.42), transparent);
     pointer-events: none;
   }
   .btn-glow > * {
     position: relative;
   }
   .btn-label {
-    font-size: 1.5rem;
+    font-size: 1.22rem;
     line-height: 1;
   }
   .btn-sub {
@@ -335,7 +415,7 @@ button,
   }
 
   /* ---------- Main tabs (Lobby, Missions...): their own hover treatment ---------- */
-  /* A gold line scans along the bottom, a glint crosses, the icon pops and spins and the label
+  /* A neon line scans along the bottom, a glint crosses, the icon pops and spins and the label
      rises. The tab button itself never moves: a tab that lifted away from the pointer made the
      hover flip on and off at its bottom edge (repeating sounds, a robot hopping back and forth). */
   .tab {
@@ -360,7 +440,7 @@ button,
     right: 0;
     bottom: 0;
     height: 3px;
-    background: linear-gradient(90deg, transparent, #ffd36b 30%, #ff7a00 70%, transparent);
+    background: linear-gradient(90deg, transparent, rgb(var(--hl-2)) 30%, rgb(var(--hl)) 70%, transparent);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -375,7 +455,7 @@ button,
   }
   .tab:not([aria-current]):hover,
   .tab:not([aria-current]):focus-visible {
-    background-color: rgba(255, 180, 0, 0.14);
+    background-color: rgb(var(--hl) / 0.22);
     color: rgb(var(--fg));
   }
   .tab-icon {
@@ -395,12 +475,12 @@ button,
   }
 
   /* ---------- Interactive tiles (skills, chips, rows, cards) ---------- */
-  /* Amber fill sweeps in, a light flash crosses it, an edge lights up and the tile slides. */
+  /* A violet fill sweeps in, a light flash crosses it, an edge lights up and the tile slides. */
   /* Built to stay smooth when you sweep across many tiles quickly:
      - the tile itself never moves or resizes, so the hit area under the pointer is rock steady
        (a tile that slid away from the pointer made hover flip on/off at its edges);
      - only its contents slide, and only compositor properties (transform, opacity) animate;
-     - the amber fill, its edge accent and its ring live on ::before and slide in as one layer,
+     - the fill, its edge accent and its ring live on ::before and slide in as one layer,
        so nothing repaints (no box-shadow/filter transitions);
      - hover-in is quick and hover-out settles slowly, which reads as smooth rather than twitchy. */
   .tile {
@@ -420,9 +500,9 @@ button,
     inset: 0;
     z-index: -1;
     background:
-      linear-gradient(#ffb400, #ffb400) left / 3px 100% no-repeat,
-      linear-gradient(100deg, rgba(255, 180, 0, 0.34), rgba(255, 122, 0, 0.1) 70%, transparent);
-    box-shadow: inset 0 0 0 1px rgba(255, 180, 0, 0.4);
+      linear-gradient(rgb(var(--hl-2)), rgb(var(--hl-2))) left / 3px 100% no-repeat,
+      linear-gradient(100deg, rgb(var(--hl) / 0.38), rgb(var(--hl-2) / 0.1) 70%, transparent);
+    box-shadow: inset 0 0 0 1px rgb(var(--hl-2) / 0.38);
     transform: translateX(-101%);
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
@@ -442,7 +522,7 @@ button,
   }
   .tile:hover,
   .tile:focus-visible {
-    color: #ffd36b;
+    color: rgb(var(--hl-text));
     transition-duration: 0.18s;
   }
   .tile:hover > :not(.absolute),
@@ -480,7 +560,7 @@ button,
     background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 16px);
   }
   .hazard {
-    background-image: repeating-linear-gradient(135deg, #ffb400 0 10px, #17130a 10px 20px);
+    background-image: repeating-linear-gradient(135deg, rgb(var(--hl)) 0 10px, rgb(var(--ink-2)) 10px 20px);
   }
 }
 
@@ -492,6 +572,150 @@ button,
 @keyframes tile-glint {
   0% { transform: translateX(-140%) skewX(-20deg); opacity: 0.9; }
   100% { transform: translateX(480%) skewX(-20deg); opacity: 0; }
+}
+
+/* ---------- Lobby layout: the 3D operator sits between the text and the combat record ---------- */
+/* phones: stage, text, record in one column; tablets: text on the left, stage over record on the right;
+   wide screens: text | stage | record side by side. */
+.lobby-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'stage' 'text' 'record';
+  align-items: center;
+}
+.lobby-text { grid-area: text; }
+.lobby-stage { grid-area: stage; }
+.lobby-record { grid-area: record; }
+@media (min-width: 1024px) {
+  .lobby-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-areas: 'text stage' 'text record';
+  }
+}
+@media (min-width: 1280px) {
+  .lobby-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.66fr) minmax(0, 0.92fr);
+    grid-template-areas: 'text stage record';
+  }
+}
+
+/* ---------- 3D lettering ---------- */
+/* Big titles stand out of the page: ten one-step shadows run down and to the right, fading from a light
+   side colour (--ex-a) to a dark edge (--ex-b), then a soft cast shadow. Steps are in em, so the depth
+   scales with the type. It is static (no animation), so it costs nothing while you use the page.
+   .ex3d is for text with a solid colour; .ex3d-grad is for gradient text (background-clip: text hides
+   text-shadow), where the layers are drawn by a copy of the text underneath (data-text). */
+.ex3d,
+.ex3d-grad::before {
+  --ex-a: 196 172 255;
+  --ex-b: 40 24 110;
+  --ex-step: 0.0072em;
+  --ex-cast: 0 4 24 / 0.6;
+  text-shadow:
+    calc(var(--ex-step) * 1 * var(--ex-k, 1)) calc(var(--ex-step) * 1 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 100%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 2 * var(--ex-k, 1)) calc(var(--ex-step) * 2 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 89%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 3 * var(--ex-k, 1)) calc(var(--ex-step) * 3 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 78%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 4 * var(--ex-k, 1)) calc(var(--ex-step) * 4 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 67%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 5 * var(--ex-k, 1)) calc(var(--ex-step) * 5 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 56%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 6 * var(--ex-k, 1)) calc(var(--ex-step) * 6 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 44%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 7 * var(--ex-k, 1)) calc(var(--ex-step) * 7 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 33%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 8 * var(--ex-k, 1)) calc(var(--ex-step) * 8 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 22%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 9 * var(--ex-k, 1)) calc(var(--ex-step) * 9 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 11%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 10 * var(--ex-k, 1)) calc(var(--ex-step) * 10 * var(--ex-k, 1)) 0 color-mix(in srgb, rgb(var(--ex-a)) 0%, rgb(var(--ex-b))),
+    calc(var(--ex-step) * 12 * var(--ex-k, 1)) calc(var(--ex-step) * 15 * var(--ex-k, 1)) calc(0.16em * var(--ex-k, 1)) rgb(var(--ex-cast));
+}
+.ex3d-sm {
+  --ex-step: 0.0062em;
+}
+.ex3d-grad {
+  position: relative;
+  isolation: isolate;
+}
+.ex3d-grad::before {
+  content: attr(data-text);
+  content: attr(data-text) / '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  white-space: nowrap;
+  color: rgb(var(--ex-a));
+  --ex-a: 150 90 240;
+  --ex-b: 40 14 92;
+  pointer-events: none;
+  user-select: none;
+}
+[data-theme='light'] .ex3d,
+[data-theme='light'] .ex3d-grad::before {
+  --ex-a: 150 120 240;
+  --ex-b: 50 30 140;
+  --ex-cast: 40 20 100 / 0.25;
+}
+[data-theme='light'] .ex3d-grad::before {
+  --ex-a: 60 36 150;
+  --ex-b: 24 12 70;
+}
+
+/* Reveal masks: text rises into view from behind an edge, solid and sharp the whole way (no fade or blur,
+   which turned pale and smeary on the light page). The padding leaves room for the 3D lettering's depth
+   and shadow; the negative margin gives that room back to the layout. */
+.hero-mask {
+  display: block;
+  overflow: hidden;
+  padding: 0 0.34em 0.32em 0;
+  margin: 0 -0.34em -0.32em 0;
+}
+.cap-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.06em 0.04em 0.14em;
+  margin: -0.06em -0.04em -0.14em;
+}
+
+/* A solid slab under the main buttons, like a key with real thickness. It is a plate behind the
+   button, so the button itself never moves; pressing makes the slab thinner. */
+.btn-glow {
+  isolation: isolate;
+}
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateY(6px);
+  background: linear-gradient(180deg, rgb(var(--cta-slab-a)), rgb(var(--cta-slab-b)));
+  clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+  transition: transform 0.1s;
+  pointer-events: none;
+}
+.btn-glow:has(.btn-start:active)::after {
+  transform: translateY(2px);
+}
+
+/* ---------- Intro captions: each word fades up as it is spoken ---------- */
+.cap-word {
+  display: inline-block;
+}
+
+/* A tab that has already seen the intro never flashes the loading screen (flag set in layout.tsx). */
+html[data-boot='skip'] .boot-screen {
+  display: none;
+}
+
+/* The display font (Chakra Petch) comes in real weights, so nothing is ever faked. Display text is upright,
+   and bold unless the markup asks for another weight (:where keeps the default weaker than the utilities). */
+.font-display,
+.btn-start,
+.btn-ghost {
+  font-synthesis: none;
+}
+.font-display {
+  font-style: normal;
+}
+:where(.font-display) {
+  font-weight: 700;
 }
 
 /* Buttons and tabs are UI chrome, not text: don't select them on click or drag. */
@@ -508,7 +732,7 @@ button,
   position: absolute;
   bottom: -12px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffd36b, #ff7a00 60%, transparent 72%);
+  background: radial-gradient(circle, rgb(var(--ember-a)), rgb(var(--ember-b)) 60%, transparent 72%);
   opacity: 0;
   animation: rise linear infinite;
 }
@@ -520,33 +744,93 @@ button,
 /* Full name, set diagonally behind everything. */
 .watermark {
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 190, 60, 0.14);
-  background: linear-gradient(90deg, rgba(255, 180, 0, 0), rgba(255, 150, 0, 0.1) 50%, rgba(255, 180, 0, 0));
+  -webkit-text-stroke: 1.5px rgb(var(--hl-line) / 0.16);
+  background: linear-gradient(90deg, rgb(var(--hl) / 0), rgb(var(--hl) / 0.12) 50%, rgb(var(--hl) / 0));
   -webkit-background-clip: text;
   background-clip: text;
 }
 
-/* Backdrop layers. The dark values are what used to be inline styles; the light theme overrides
-   them in the LIGHT THEME block below. */
+/* Backdrop layers (dark theme values; the light theme overrides some of them in the LIGHT THEME block below). */
 .bd-glow {
   background:
-    radial-gradient(55% 70% at 80% 38%, rgba(255, 122, 0, 0.2), transparent 70%),
-    radial-gradient(40% 50% at 8% 100%, rgba(255, 180, 0, 0.07), transparent 70%);
+    radial-gradient(50% 64% at 76% 34%, rgb(var(--hl) / 0.2), transparent 70%),
+    radial-gradient(30% 40% at 56% 40%, rgb(120 210 255 / 0.06), transparent 70%),
+    radial-gradient(44% 56% at 4% 100%, rgb(var(--hl-2) / 0.08), transparent 70%),
+    radial-gradient(36% 48% at 100% 100%, rgb(var(--flame) / 0.12), transparent 70%);
+}
+/* Northern lights: soft curtains of colour with faint vertical rays, faded out at their ends by a mask. They
+   are drawn once and only moved (transform, opacity) by GSAP, so they cost nothing per frame. */
+.aurora {
+  position: absolute;
+  height: 70%;
+  width: 62%;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+  opacity: 0.6;
+  background:
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.07) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, transparent 0%, rgb(var(--aur) / calc(var(--aur-k) * 0.9)) 42%, rgb(var(--aur) / calc(var(--aur-k) * 0.35)) 70%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 50% 46% at 50% 55%, #000 25%, transparent 72%);
+  mask-image: radial-gradient(ellipse 50% 46% at 50% 55%, #000 25%, transparent 72%);
+}
+.aurora-1 {
+  --aur: var(--aur-1);
+  left: -6%;
+  top: 2%;
+  rotate: -9deg;
+}
+.aurora-2 {
+  --aur: var(--aur-2);
+  left: 28%;
+  top: -6%;
+  rotate: 5deg;
+  width: 54%;
+}
+.aurora-3 {
+  --aur: var(--aur-3);
+  left: 58%;
+  top: 4%;
+  rotate: -4deg;
+}
+/* A shooting star: a short bright streak with a fading tail, moved by GSAP (Scenery). */
+.sc-meteor {
+  width: 130px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(var(--land-star)), rgb(var(--land-star) / 0));
+  rotate: -24deg;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgb(var(--land-star) / 0.8));
+  will-change: transform, opacity;
+}
+
+/* Scenery: three ridges, pines and stars, tinted by the --land-* tokens (see Backdrop). */
+.bd-land-far {
+  color: rgb(var(--land-far) / 0.2);
+}
+.bd-land-mid {
+  color: rgb(var(--land-mid) / 0.26);
+}
+.bd-land-near {
+  color: rgb(var(--land-near) / 0.5);
+}
+.bd-star {
+  color: rgb(var(--land-star) / 0.85);
 }
 .bd-vignette {
-  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+  background: radial-gradient(ellipse at center, transparent 55%, rgb(0 2 10 / 0.7) 100%);
 }
 .bd-hex {
-  color: rgba(255, 190, 60, 0.1);
+  color: rgb(var(--hl-line) / 0.09);
 }
 .bd-spot {
-  background: radial-gradient(circle, rgba(255, 170, 0, 0.13), transparent 62%);
+  background: radial-gradient(circle, rgb(var(--hl-2) / 0.1), transparent 62%);
 }
 .bd-contour {
-  color: transparent; /* dark theme: off; the light theme draws the contour map */
+  color: rgb(var(--hl-line) / 0.06);
 }
 .load-glow {
-  background: radial-gradient(50% 60% at 50% 45%, rgba(255, 122, 0, 0.22), transparent 70%);
+  background: radial-gradient(50% 60% at 50% 45%, rgb(var(--hl) / 0.2), transparent 70%);
 }
 
 /* Radar sweep (lobby decoration). */
@@ -554,7 +838,7 @@ button,
   to { transform: rotate(360deg); }
 }
 .radar-sweep {
-  background: conic-gradient(from 0deg, transparent 0 72%, rgba(255, 180, 0, 0.38) 100%);
+  background: conic-gradient(from 0deg, transparent 0 72%, rgb(var(--hl-2) / 0.4) 100%);
   animation: radar-spin 5s linear infinite;
   -webkit-mask: radial-gradient(circle, #000 0 69%, transparent 70%);
   mask: radial-gradient(circle, #000 0 69%, transparent 70%);
@@ -687,101 +971,136 @@ button,
 /* =====================================================================================
    LIGHT THEME ("FROST")
    Dark is the default; these rules only change what has to look different on a light page.
-   Idea: a clean tactical briefing screen. Cool ice-white surfaces with fine blue-grey hairlines,
-   deep navy type, one blue accent, and a faint blueprint backdrop (hex grid + contour map).
+   Idea: a clean briefing screen. Cool ice-white surfaces with fine blue-grey hairlines, deep navy type,
+   one blue accent, and a faint blueprint backdrop (hex grid + contour map).
    ===================================================================================== */
 [data-theme='light'] .panel {
   background: linear-gradient(160deg, rgb(255 255 255 / 0.98), rgb(246 249 253 / 0.98));
-  box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 rgb(30 58 110 / 0.06), inset 0 0 0 1px rgb(30 58 110 / 0.14);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 rgb(40 30 90 / 0.06), inset 0 0 0 1px rgb(40 30 90 / 0.13);
 }
 [data-theme='light'] .panel::after {
-  box-shadow: inset 0 0 0 1px rgb(37 99 235 / 0.5), inset 0 0 44px rgb(59 130 246 / 0.1);
+  box-shadow: inset 0 0 0 1px rgb(112 76 236 / 0.5), inset 0 0 44px rgb(124 92 246 / 0.1);
 }
 
-[data-theme='light'] .btn-start {
-  background: linear-gradient(180deg, #5b9bff 0%, #2f6df0 55%, #1d4ed8 100%);
-  color: #fff;
-}
-[data-theme='light'] .btn-ghost {
-  background: rgb(var(--fg) / 0.06);
-  color: rgb(var(--fg));
-  box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.16);
-}
 [data-theme='light'] .btn-ghost:hover {
-  background: rgb(59 130 246 / 0.16);
-  color: rgb(var(--gold-soft));
-}
-[data-theme='light'] .btn-ghost::before {
-  background: rgb(59 130 246 / 0.1);
-}
-[data-theme='light'] .btn-glow::before {
-  background: radial-gradient(closest-side, rgb(37 99 235 / 0.28), transparent);
+  background: rgb(124 92 246 / 0.16);
 }
 
 [data-theme='light'] .tab::before,
 [data-theme='light'] .tile::after {
   background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.8), transparent);
 }
-[data-theme='light'] .tab::after {
-  background: linear-gradient(90deg, transparent, #93c5fd 30%, #2563eb 70%, transparent);
-}
 [data-theme='light'] .tab:not([aria-current]):hover,
 [data-theme='light'] .tab:not([aria-current]):focus-visible {
-  background-color: rgb(59 130 246 / 0.16);
+  background-color: rgb(124 92 246 / 0.14);
 }
-
 [data-theme='light'] .tile::before {
   background:
-    linear-gradient(#2563eb, #2563eb) left / 3px 100% no-repeat,
-    linear-gradient(100deg, rgb(59 130 246 / 0.22), rgb(14 165 233 / 0.08) 70%, transparent);
-  box-shadow: inset 0 0 0 1px rgb(37 99 235 / 0.32);
-}
-[data-theme='light'] .tile:hover,
-[data-theme='light'] .tile:focus-visible {
-  color: rgb(var(--gold-soft));
+    linear-gradient(#9b4fe0, #9b4fe0) left / 3px 100% no-repeat,
+    linear-gradient(100deg, rgb(124 92 246 / 0.2), rgb(190 90 240 / 0.08) 70%, transparent);
+  box-shadow: inset 0 0 0 1px rgb(112 76 236 / 0.3);
 }
 
 [data-theme='light'] .stripes {
-  background-image: repeating-linear-gradient(135deg, rgb(40 70 120 / 0.04) 0 2px, transparent 2px 16px);
+  background-image: repeating-linear-gradient(135deg, rgb(60 40 120 / 0.04) 0 2px, transparent 2px 16px);
 }
 [data-theme='light'] .watermark {
-  -webkit-text-stroke: 1.5px rgb(37 99 235 / 0.1);
-  background: linear-gradient(90deg, rgb(59 130 246 / 0), rgb(59 130 246 / 0.05) 50%, rgb(59 130 246 / 0));
+  -webkit-text-stroke: 1.5px rgb(112 76 236 / 0.2);
+  background: linear-gradient(90deg, rgb(124 92 246 / 0), rgb(124 92 246 / 0.08) 50%, rgb(124 92 246 / 0));
   -webkit-background-clip: text;
   background-clip: text;
 }
 [data-theme='light'] .radar-sweep {
-  background: conic-gradient(from 0deg, transparent 0 72%, rgb(37 99 235 / 0.3) 100%);
-}
-[data-theme='light'] .ember {
-  background: radial-gradient(circle, #dbeafe, #3b82f6 60%, transparent 72%);
+  background: conic-gradient(from 0deg, transparent 0 72%, rgb(112 76 236 / 0.3) 100%);
 }
 
 /* Light backdrop: cool glows from the top-right and bottom-left, a faint hex grid and a blue contour
    map. The two slanted "streak" shapes become soft white glass instead of dark smudges. */
 [data-theme='light'] .bd-glow {
   background:
-    radial-gradient(60% 75% at 84% 4%, rgb(96 165 250 / 0.3), transparent 68%),
-    radial-gradient(45% 55% at 4% 100%, rgb(125 211 252 / 0.24), transparent 70%);
+    radial-gradient(60% 75% at 84% 4%, rgb(167 139 250 / 0.26), transparent 68%),
+    radial-gradient(45% 55% at 4% 100%, rgb(216 140 255 / 0.16), transparent 70%);
 }
-[data-theme='light'] .bd-vignette {
-  background: radial-gradient(ellipse at center, transparent 62%, rgb(30 58 110 / 0.09) 100%);
+[data-theme='light'] /* Northern lights: soft curtains of colour with faint vertical rays, faded out at their ends by a mask. They
+   are drawn once and only moved (transform, opacity) by GSAP, so they cost nothing per frame. */
+.aurora {
+  position: absolute;
+  height: 70%;
+  width: 62%;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+  opacity: 0.6;
+  background:
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.07) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, transparent 0%, rgb(var(--aur) / calc(var(--aur-k) * 0.9)) 42%, rgb(var(--aur) / calc(var(--aur-k) * 0.35)) 70%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 50% 46% at 50% 55%, #000 25%, transparent 72%);
+  mask-image: radial-gradient(ellipse 50% 46% at 50% 55%, #000 25%, transparent 72%);
+}
+.aurora-1 {
+  --aur: var(--aur-1);
+  left: -6%;
+  top: 2%;
+  rotate: -9deg;
+}
+.aurora-2 {
+  --aur: var(--aur-2);
+  left: 28%;
+  top: -6%;
+  rotate: 5deg;
+  width: 54%;
+}
+.aurora-3 {
+  --aur: var(--aur-3);
+  left: 58%;
+  top: 4%;
+  rotate: -4deg;
+}
+/* A shooting star: a short bright streak with a fading tail, moved by GSAP (Scenery). */
+.sc-meteor {
+  width: 130px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(var(--land-star)), rgb(var(--land-star) / 0));
+  rotate: -24deg;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgb(var(--land-star) / 0.8));
+  will-change: transform, opacity;
+}
+
+/* Scenery: three ridges, pines and stars, tinted by the --land-* tokens (see Backdrop). */
+.bd-land-far {
+  color: rgb(var(--land-far) / 0.2);
+}
+.bd-land-mid {
+  color: rgb(var(--land-mid) / 0.26);
+}
+.bd-land-near {
+  color: rgb(var(--land-near) / 0.5);
+}
+.bd-star {
+  color: rgb(var(--land-star) / 0.85);
+}
+.bd-vignette {
+  background: radial-gradient(ellipse at center, transparent 62%, rgb(50 30 110 / 0.08) 100%);
 }
 [data-theme='light'] .bd-hex {
-  color: rgb(50 90 150 / 0.1);
+  color: rgb(90 70 160 / 0.1);
 }
 [data-theme='light'] .bd-spot {
-  background: radial-gradient(circle, rgb(59 130 246 / 0.18), transparent 62%);
+  background: radial-gradient(circle, rgb(124 92 246 / 0.15), transparent 62%);
 }
 [data-theme='light'] .bd-contour {
-  color: rgb(50 90 160 / 0.15);
+  color: rgb(100 80 170 / 0.14);
+}
+[data-theme='light'] .bd-stars {
+  display: none;
 }
 [data-theme='light'] .bd-streak {
   background-image: none;
   background-color: rgb(255 255 255 / 0.3);
 }
 [data-theme='light'] .load-glow {
-  background: radial-gradient(50% 60% at 50% 45%, rgb(96 165 250 / 0.32), transparent 70%);
+  background: radial-gradient(50% 60% at 50% 45%, rgb(167 139 250 / 0.3), transparent 70%);
 }
 
 /* Theme switch: a circular wipe from the toggle button (View Transitions API; browsers without it
@@ -816,6 +1135,7 @@ button,
   .orb-led,
   .orb-bob,
   .comms-bar,
+  .sc-meteor,
   .tab:hover::before {
     animation: none !important;
   }

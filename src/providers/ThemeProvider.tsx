@@ -8,7 +8,7 @@ export type Theme = 'dark' | 'light';
 
 const STORAGE_KEY = 'theme';
 // Browser UI colour (mobile address bar etc.) for each theme.
-const BROWSER_COLOR: Record<Theme, string> = { dark: '#0a0b0d', light: '#f1f5fa' };
+const BROWSER_COLOR: Record<Theme, string> = { dark: '#0a0b11', light: '#f7f6fb' };
 
 interface ThemeState {
   theme: Theme;

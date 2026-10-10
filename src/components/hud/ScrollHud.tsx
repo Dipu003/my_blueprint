@@ -115,7 +115,7 @@ export function ScrollHud() {
             {/* live percentage */}
             <motion.div style={{ y }} className="absolute right-[36px] top-0 h-0">
               <div
-                className="absolute right-0 whitespace-nowrap font-display text-xl font-extrabold italic leading-none tabular-nums text-gold drop-shadow-[0_0_6px_rgb(var(--glow-b)/0.6)]"
+                className="absolute right-0 whitespace-nowrap font-display text-xl leading-none tabular-nums text-gold drop-shadow-[0_0_6px_rgb(var(--glow-b)/0.6)]"
                 style={{ top: TOP - 10 }}
               >
                 {percent}

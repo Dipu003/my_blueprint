@@ -42,7 +42,7 @@ export function RolesMenu() {
           setOpen((o) => !o);
           play('click');
         }}
-        className={`para tile flex h-9 items-center gap-2 px-4 text-[11px] font-semibold uppercase tracking-[0.2em] sm:px-6 ${
+        className={`para tile flex h-9 items-center gap-2 px-4 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] sm:px-6 ${
           open ? 'bg-flame/20 text-gold' : 'bg-white/[0.06] text-zinc-200'
         }`}
       >
@@ -62,7 +62,7 @@ export function RolesMenu() {
             transition={{ duration: 0.16 }}
             className="panel absolute right-0 top-full z-40 mt-2 w-[min(21rem,calc(100vw-2rem))] origin-top-right p-4"
           >
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-gold">
+            <div className="flex items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.25em] text-gold">
               <span className="h-2 w-2 animate-dot rounded-full bg-ok shadow-[0_0_8px_#5fd16a]" />
               Open to roles
             </div>
@@ -83,7 +83,7 @@ export function RolesMenu() {
                   >
                     <Icon name={roleIcon(o.role)} className="h-5 w-5 shrink-0 text-gold" />
                     <div className="min-w-0">
-                      <div className="truncate font-display text-lg font-bold italic uppercase leading-tight">{o.role}</div>
+                      <div className="truncate font-display text-lg uppercase leading-tight">{o.role}</div>
                       <div className="truncate text-xs text-zinc-400">{o.focus}</div>
                     </div>
                   </button>

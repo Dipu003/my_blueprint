@@ -54,10 +54,10 @@ export function SectionBanner() {
                 <Icon name={done ? 'check' : def.id} className="h-6 w-6" />
               </div>
               <div className="min-w-0">
-                <div className="font-display text-2xl font-extrabold italic uppercase leading-none tracking-wide text-white">
+                <div className="font-display text-2xl uppercase leading-none tracking-wide text-white">
                   {def.label}
                 </div>
-                <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-300">
+                <div className="mt-1 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-zinc-300">
                   {done ? def.status : 'Fetching…'}
                 </div>
               </div>

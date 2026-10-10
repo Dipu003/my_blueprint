@@ -29,7 +29,7 @@ export function Loadout() {
     <motion.div variants={stagger} initial="hidden" animate="show">
       <Heading kicker="Gunsmith" title="Loadout" />
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[340px_minmax(0,1fr)]">
         <motion.div variants={item}>
           <ul role="tablist" aria-label="Loadout slots" className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 lg:grid-cols-1">
             {LOADOUT.map((g, i) => {
@@ -44,7 +44,7 @@ export function Loadout() {
                       setSel(i);
                       play('click');
                     }}
-                    className={`para tile flex h-[3.75rem] w-full items-center gap-3 pl-6 pr-8 text-left ${
+                    className={`para tile flex min-h-[3.75rem] w-full items-center gap-2 py-2 pl-4 pr-6 text-left sm:gap-3 sm:pl-6 sm:pr-8 ${
                       active ? 'bg-flame/20' : 'bg-white/[0.05]'
                     }`}
                   >
@@ -57,12 +57,12 @@ export function Loadout() {
                     )}
                     <Icon name={SLOT_ICON[g.name] ?? 'star'} className="h-5 w-5 shrink-0 text-gold max-sm:hidden" />
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">{g.slot}</span>
-                      <span className={`block truncate font-display text-lg font-bold italic uppercase leading-tight ${active ? 'text-white' : ''}`}>
+                      <span className="block text-[0.625rem] font-semibold uppercase tracking-[0.25em] text-gold">{g.slot}</span>
+                      <span className={`block hyphens-auto pr-1 font-display text-[0.8125rem] uppercase leading-tight sm:text-base ${active ? 'text-white' : ''}`}>
                         {g.name}
                       </span>
                     </span>
-                    <span className="w-6 shrink-0 text-right font-display text-lg font-bold italic text-zinc-500">{g.items.length}</span>
+                    <span className="w-6 shrink-0 text-right font-display text-lg text-zinc-500">{g.items.length}</span>
                   </button>
                 </li>
               );
@@ -80,14 +80,14 @@ export function Loadout() {
               className="relative"
             >
               <Icon name={SLOT_ICON[cur.name] ?? 'star'} className="pointer-events-none absolute right-0 top-0 h-28 w-28 text-gold/[0.12] sm:h-32 sm:w-32" />
-              <h2 className="relative font-display text-5xl font-extrabold italic uppercase leading-none text-white sm:text-6xl">
+              <h2 className="relative font-display text-5xl uppercase leading-none text-white sm:text-6xl">
                 {cur.name}
               </h2>
               <ul className="relative mt-5 grid auto-rows-[3.5rem] grid-cols-1 gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
                 {cur.items.map((it, i) => (
                   <li key={it} className="para tile flex h-full items-center gap-3 bg-white/[0.05] pl-6 pr-8">
-                    <span className="tile-num w-6 shrink-0 font-display text-sm font-bold italic tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="line-clamp-2 min-w-0 text-[13px] font-semibold uppercase leading-tight tracking-wide">{it}</span>
+                    <span className="tile-num w-6 shrink-0 font-display text-sm tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="line-clamp-2 min-w-0 text-[0.8125rem] font-semibold uppercase leading-tight tracking-wide">{it}</span>
                   </li>
                 ))}
               </ul>

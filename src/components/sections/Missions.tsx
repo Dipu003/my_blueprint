@@ -25,13 +25,13 @@ export function Missions() {
         <section className="panel p-5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">
+              <div className="flex flex-wrap items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.3em] text-gold">
                 {MISSION.code} · Main mission
                 <span className="para flex items-center gap-1 bg-ok/15 px-4 py-0.5 text-ok">
                   <Icon name="check" className="h-3.5 w-3.5" /> Complete
                 </span>
               </div>
-              <h2 className="mt-1 font-display text-4xl font-extrabold italic uppercase leading-none text-white sm:text-5xl">
+              <h2 className="mt-1 font-display text-4xl uppercase leading-none text-white sm:text-5xl">
                 {MISSION.title}
               </h2>
               <p className="mt-2 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-400">Role: {MISSION.role}</p>
@@ -53,7 +53,7 @@ export function Missions() {
             {MISSION.stack.map((t) => (
               <li
                 key={t}
-                className="para tile flex h-9 items-center justify-center bg-white/[0.07] px-4 text-center text-[11px] font-semibold uppercase leading-tight tracking-wider text-zinc-300"
+                className="para tile flex h-9 items-center justify-center bg-white/[0.07] px-4 text-center text-[0.6875rem] font-semibold uppercase leading-tight tracking-wider text-zinc-300"
               >
                 {t}
               </li>
@@ -88,7 +88,7 @@ export function Missions() {
                   {o.tools.map((t) => (
                     <li
                       key={t}
-                      className="para tile flex h-8 items-center justify-center bg-flame/10 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-gold"
+                      className="para tile flex h-8 items-center justify-center bg-flame/10 px-3 text-center text-[0.6875rem] font-semibold uppercase tracking-wider text-gold"
                     >
                       {t}
                     </li>
@@ -104,8 +104,8 @@ export function Missions() {
             <div className="hazard h-2 w-full" aria-hidden />
             <div className="flex flex-1 flex-col items-center justify-center gap-2 p-6 text-center">
               <Icon name="lock" className="h-10 w-10 text-zinc-500" />
-              <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">{NEXT_MISSION.code} · Locked</div>
-              <div className="font-display text-3xl font-extrabold italic uppercase text-white">{NEXT_MISSION.title}</div>
+              <div className="text-[0.6875rem] font-semibold uppercase tracking-[0.3em] text-gold">{NEXT_MISSION.code} · Locked</div>
+              <div className="font-display text-3xl uppercase text-white">{NEXT_MISSION.title}</div>
               <p className="text-sm text-zinc-400">{NEXT_MISSION.hint}</p>
             </div>
           </section>

@@ -46,7 +46,10 @@ function Briefing({ def }: { def: OpenRole }) {
 
   useEffect(() => {
     const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') closeRole();
+      if (e.key === 'Escape') {
+        e.preventDefault(); // so the global Esc (back) does not also fire
+        closeRole();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -99,7 +102,7 @@ function Briefing({ def }: { def: OpenRole }) {
             ref={backButton}
             type="button"
             onClick={closeRole}
-            className="para tile flex h-10 shrink-0 items-center gap-2 bg-white/[0.08] pl-6 pr-8 font-display text-lg font-bold italic uppercase tracking-wide"
+            className="para tile flex h-10 shrink-0 items-center gap-2 bg-white/[0.08] pl-6 pr-8 font-display text-lg uppercase tracking-wide"
           >
             <Icon name="back" className="h-5 w-5 text-gold" /> Back
           </button>
@@ -116,7 +119,7 @@ function Briefing({ def }: { def: OpenRole }) {
                   type="button"
                   aria-current={active ? 'true' : undefined}
                   onClick={() => openRole(r.id)}
-                  className={`para tile flex h-9 shrink-0 items-center gap-2 pl-6 pr-8 font-display text-base font-bold italic uppercase tracking-wide ${
+                  className={`para tile flex h-9 shrink-0 items-center gap-2 pl-6 pr-8 font-display text-base uppercase tracking-wide ${
                     active ? 'bg-flame/25 text-white' : 'bg-white/[0.05]'
                   }`}
                 >
@@ -137,12 +140,12 @@ function Briefing({ def }: { def: OpenRole }) {
                   <Icon name={roleIcon(def.role)} className="h-9 w-9 sm:h-11 sm:w-11" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">
+                  <div className="text-[0.6875rem] font-semibold uppercase tracking-[0.3em] text-gold">
                     Mode briefing · {number}/{String(OPEN_TO.length).padStart(2, '0')}
                   </div>
                   <h2
                     id="mode-title"
-                    className="mt-1 font-display text-4xl font-extrabold italic uppercase leading-[0.95] text-white sm:text-5xl"
+                    className="mt-1 font-display text-4xl uppercase leading-[0.95] text-white sm:text-5xl"
                   >
                     {def.role}
                   </h2>
@@ -154,10 +157,10 @@ function Briefing({ def }: { def: OpenRole }) {
               <dl className="grid shrink-0 grid-cols-3 gap-2 lg:w-[26rem]">
                 {def.proof.map((p) => (
                   <div key={p.label} className="cut tile flex min-h-[5.5rem] flex-col justify-between bg-white/[0.05] px-3 py-2.5">
-                    <dd className="order-1 font-display text-4xl font-extrabold italic leading-none text-gold">
+                    <dd className="order-1 font-display text-3xl leading-none text-gold sm:text-4xl">
                       {p.live === 'years' ? years : p.value}
                     </dd>
-                    <dt className="order-2 mt-1.5 text-[11px] font-semibold uppercase leading-tight tracking-widest text-zinc-400">
+                    <dt className="order-2 mt-1.5 hyphens-auto text-[0.625rem] font-semibold uppercase leading-tight tracking-normal text-zinc-400 sm:text-[0.6875rem] sm:tracking-widest">
                       {p.label}
                     </dt>
                   </div>
@@ -169,7 +172,7 @@ function Briefing({ def }: { def: OpenRole }) {
               <section aria-labelledby="mode-work">
                 <h3
                   id="mode-work"
-                  className="mb-3 flex items-center gap-2 font-display text-xl font-bold italic uppercase tracking-wide text-white"
+                  className="mb-3 flex items-center gap-2 font-display text-xl uppercase tracking-wide text-white"
                 >
                   <span aria-hidden className="h-4 w-1 -skew-x-12 bg-flame" /> What I&apos;ve done
                   <span className="ml-1 text-xs font-semibold not-italic tracking-[0.2em] text-zinc-500">EXPERIENCE</span>
@@ -177,7 +180,7 @@ function Briefing({ def }: { def: OpenRole }) {
                 <div className="space-y-3">
                   {def.work.map((g, i) => (
                     <motion.div key={g.title} variants={item} className="cut bg-white/[0.04] p-4">
-                      <h4 className="flex items-center gap-2.5 font-display text-lg font-bold italic uppercase tracking-wide text-gold">
+                      <h4 className="flex items-center gap-2.5 font-display text-lg uppercase tracking-wide text-gold">
                         <span className="text-sm tabular-nums text-zinc-500">{String(i + 1).padStart(2, '0')}</span>
                         {g.title}
                       </h4>
@@ -201,7 +204,7 @@ function Briefing({ def }: { def: OpenRole }) {
                     {def.tools.map((t) => (
                       <li
                         key={t}
-                        className="para tile flex h-8 items-center justify-center bg-flame/10 px-3 text-center text-[11px] font-semibold uppercase leading-tight tracking-wider text-gold"
+                        className="para tile flex h-8 items-center justify-center bg-flame/10 px-3 text-center text-[0.6875rem] font-semibold uppercase leading-tight tracking-wider text-gold"
                       >
                         {t}
                       </li>
@@ -216,7 +219,7 @@ function Briefing({ def }: { def: OpenRole }) {
                       <li key={r.id} className="cut tile flex items-center gap-3 bg-white/[0.05] px-3 py-2.5">
                         <Icon name="briefcase" className="h-5 w-5 shrink-0 text-gold" />
                         <div className="min-w-0">
-                          <div className="font-display text-base font-bold italic uppercase leading-tight">{r.role}</div>
+                          <div className="font-display text-base uppercase leading-tight">{r.role}</div>
                           <div className="mt-0.5 text-xs text-zinc-400">
                             {[r.company, r.period].filter(Boolean).join(' · ')}
                           </div>
@@ -233,7 +236,7 @@ function Briefing({ def }: { def: OpenRole }) {
                       {def.medals.map((m) => (
                         <li key={m} className="cut tile flex items-center gap-3 bg-white/[0.05] px-3 py-2.5">
                           <Icon name="medal" className="h-5 w-5 shrink-0 text-gold" />
-                          <span className="font-display text-base font-bold italic uppercase leading-tight">{m}</span>
+                          <span className="font-display text-base uppercase leading-tight">{m}</span>
                         </li>
                       ))}
                     </ul>

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { SECTIONS } from '@/data/portfolio';
 import { useGame } from '@/providers/GameProvider';
+import { BackButton } from '@/components/hud/BackButton';
 import { Icon } from '@/components/ui/Icon';
 
 /** Red "new" dot on tabs you have not opened yet, like unread badges in CoD menus. */
@@ -20,7 +21,7 @@ export function NavTabs() {
 
   return (
     <>
-      <nav aria-label="Sections" className="relative z-20 hidden shrink-0 pt-4 md:block">
+      <nav aria-label="Sections" className="relative z-20 hidden shrink-0 pt-4 lg:block">
         <div className="mx-auto flex max-w-7xl items-end gap-1 px-8">
           {SECTIONS.map((s, i) => {
             const active = s.id === section;
@@ -32,7 +33,7 @@ export function NavTabs() {
                 data-nav-tab
                 aria-current={active ? 'page' : undefined}
                 onClick={() => go(s.id)}
-                className={`para tab relative flex items-center gap-2.5 px-8 py-2.5 ${
+                className={`para tab relative flex items-center gap-2.5 px-5 py-2.5 xl:px-8 ${
                   active ? 'text-on-gold' : 'bg-white/[0.05] text-zinc-300'
                 }`}
               >
@@ -44,21 +45,22 @@ export function NavTabs() {
                   />
                 )}
                 <Icon name={s.id} className="tab-icon relative h-5 w-5" />
-                <span className="tab-label relative font-display text-lg font-bold italic uppercase leading-none tracking-wider">
+                <span className="tab-label relative font-display text-xs uppercase leading-none tracking-wider xl:text-sm">
                   {s.label}
                 </span>
-                <kbd className={`relative font-ui text-[10px] font-bold ${active ? 'text-on-gold/60' : 'text-zinc-500'}`}>{i + 1}</kbd>
+                <kbd className={`relative hidden font-ui text-[0.625rem] font-bold xl:inline ${active ? 'text-on-gold/60' : 'text-zinc-500'}`}>{i + 1}</kbd>
                 {!seen && <NewDot className="right-4 top-1.5" />}
               </button>
             );
           })}
+          <BackButton variant="bar" />
         </div>
         <div className="h-0.5 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
       </nav>
 
       <nav
         aria-label="Sections"
-        className="relative z-20 grid shrink-0 grid-cols-5 border-t border-gold/40 bg-ink-2/95 backdrop-blur md:hidden"
+        className="relative z-20 grid shrink-0 grid-cols-5 border-t border-gold/40 bg-ink-2/95 backdrop-blur lg:hidden"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {SECTIONS.map((s) => {
@@ -76,7 +78,7 @@ export function NavTabs() {
             >
               {active && <span className="absolute inset-x-3 top-0 h-0.5 bg-flame shadow-[0_0_8px_rgb(var(--glow-b))]" />}
               <Icon name={s.id} className="h-5 w-5" />
-              <span className="font-display text-xs font-bold italic uppercase tracking-wide">{s.label}</span>
+              <span className="font-display text-xs uppercase tracking-wide">{s.label}</span>
               {!seen && <NewDot className="right-[28%] top-1.5" />}
             </button>
           );

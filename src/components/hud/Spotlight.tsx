@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Soft amber light that follows the pointer (the "lights that follow your mouse" effect).
+ * Soft light that follows the pointer (the "lights that follow your mouse" effect).
  * It moves with a GPU transform on a fixed layer and is updated once per animation frame,
  * so tracking the pointer never triggers layout, a page-wide restyle or a gradient repaint.
  */

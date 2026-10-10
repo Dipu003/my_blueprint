@@ -7,6 +7,7 @@ export type IconName =
   | 'lock'
   | 'check'
   | 'arrow'
+  | 'play'
   | 'back'
   | 'chevron'
   | 'mail'
@@ -26,7 +27,9 @@ export type IconName =
   | 'graduation'
   | 'medal'
   | 'sun'
-  | 'moon';
+  | 'moon'
+  | 'infinity'
+  | 'puzzle';
 
 // 24x24 stroke icons. Paths only, so they inherit color from `currentColor`.
 const PATHS: Record<IconName, string[]> = {
@@ -45,6 +48,7 @@ const PATHS: Record<IconName, string[]> = {
   lock: ['M6 11h12v9H6z', 'M8.5 11V8a3.5 3.5 0 0 1 7 0v3'],
   check: ['M5 12.5l4.5 4.5L19 7.5'],
   arrow: ['M5 12h14', 'M13 6l6 6-6 6'],
+  play: ['M7 5l12 7-12 7z'],
   back: ['M19 12H5', 'M11 6l-6 6 6 6'],
   chevron: ['M6 9l6 6 6-6'],
   mail: ['M3 6h18v12H3z', 'M3 7l9 6 9-6'],
@@ -100,6 +104,10 @@ const PATHS: Record<IconName, string[]> = {
     'M6.9 17.1l-1.6 1.6',
   ],
   moon: ['M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'],
+  infinity: ['M12 12c-2-2.7-3.6-4-5.5-4a4 4 0 0 0 0 8c1.9 0 3.5-1.3 5.5-4s3.6-4 5.5-4a4 4 0 0 1 0 8c-1.9 0-3.5-1.3-5.5-4z'],
+  puzzle: [
+    'M5 8h3.2a2.3 2.3 0 1 1 4.6 0H16v3.2a2.3 2.3 0 1 1 0 4.6V19h-3.2a2.3 2.3 0 1 0-4.6 0H5v-3.2a2.3 2.3 0 1 0 0-4.6z',
+  ],
 };
 
 export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; className?: string }) {

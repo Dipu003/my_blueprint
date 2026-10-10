@@ -53,12 +53,20 @@ export function yearsOfExperience(now: Date = new Date()): number {
   return Math.max(0, years);
 }
 
-export const STATS: { value: string; label: string; bar?: number; live?: 'years' }[] = [
-  // `live: 'years'` rows show yearsOfExperience() instead of `value` (which is the first-render fallback).
-  { value: '3', label: 'Years in the field', live: 'years' },
-  { value: '50%', label: 'Documentation effort cut', bar: 50 },
-  { value: '25%', label: 'LLM inference cost cut', bar: 25 },
-  { value: '100+', label: 'Data collections queried' },
+/**
+ * The headline skills shown on the lobby: the stack the intro speech and the role briefings keep coming
+ * back to. There are deliberately no levels or percentages (a bar at 50% reads as "half skilled"); the
+ * full list lives in the Loadout tab.
+ */
+export const KEY_SKILLS: { name: string; group: string }[] = [
+  { name: 'Node.js', group: 'Runtime' },
+  { name: 'NestJS', group: 'Framework' },
+  { name: 'AWS', group: 'Cloud' },
+  { name: 'DevOps', group: 'CI/CD & infra' },
+  { name: 'Kafka', group: 'Streaming' },
+  { name: 'Agentic AI', group: 'LangGraph & RAG' },
+  { name: 'MongoDB', group: 'Database' },
+  { name: 'Problem Solving', group: 'Core strength' },
 ];
 
 /** Kill-feed rows on the lobby: "player [weapon] target result". */

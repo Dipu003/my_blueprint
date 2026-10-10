@@ -1,17 +1,76 @@
-// Tiny WebAudio synth: no asset files needed. Browsers require a user gesture
-// before audio starts, so the context is created lazily on the first cue.
+// Tiny WebAudio synth: no asset files needed.
 // Sounds are tuned to feel like a tactical shooter menu: mechanical clicks,
 // bolt/rack thunks and radio beeps.
+//
+// Browsers keep audio locked until the visitor presses a key or clicks. A context made before that
+// stays "suspended" with its clock stopped at 0, so anything scheduled on it is not played: it piles
+// up and bursts out at the first click (that was the "no sound until I open another tab" bug). So:
+//   - nothing is scheduled while the context is not running (`liveCtx`), the cue is simply dropped;
+//   - the "Press start" screen calls `unlockAudio()` inside its click, and only then is there sound;
+//   - when the browser tab is hidden the audio is paused, and it resumes when the tab comes back.
 
-type Cue = 'hover' | 'tab' | 'tile' | 'click' | 'nav' | 'fetch' | 'sunrise' | 'nightfall' | 'boot' | 'confirm';
+type Cue = 'hover' | 'tab' | 'tile' | 'click' | 'nav' | 'fetch' | 'sunrise' | 'nightfall' | 'intro' | 'confirm';
 
 let ctx: AudioContext | null = null;
 let enabled = true;
+let unlocked = false;
 let noiseBuf: AudioBuffer | null = null;
 
 export function setSoundEnabled(on: boolean) {
   enabled = on;
   if (!on) stopVoice();
+}
+
+export const isSoundEnabled = () => enabled;
+
+/** The shared audio context (made on first use; it may still be suspended, see `audioLive`). */
+export const audioContext = (): AudioContext | null => getCtx();
+
+/** True once the browser lets us make sound. Cues are dropped (not queued) until then. */
+export const audioLive = () => ctx !== null && ctx.state === 'running';
+
+/**
+ * Unlocks audio. Call it from inside a click or key press (the "Press start" button): that is the
+ * only moment browsers allow a context to start. Resolves true when sound can play.
+ */
+export async function unlockAudio(): Promise<boolean> {
+  const c = getCtx();
+  if (!c) return false;
+  try {
+    await c.resume();
+  } catch {}
+  // iOS Safari: a silent buffer started inside the gesture finishes the unlock, and the "playback"
+  // audio session makes Web Audio ignore the ring/silent switch.
+  try {
+    const silent = c.createBufferSource();
+    silent.buffer = c.createBuffer(1, 1, 22050);
+    silent.connect(c.destination);
+    silent.start(0);
+    const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
+    if (session) session.type = 'playback';
+  } catch {}
+  unlocked = c.state === 'running';
+  return unlocked;
+}
+
+if (typeof document !== 'undefined') {
+  // Another browser tab in front: silence this one (a voice line must not keep talking in the
+  // background). Back in front: carry on, if the visitor had already unlocked sound.
+  document.addEventListener('visibilitychange', () => {
+    if (!ctx) return;
+    if (document.hidden) {
+      stopVoice();
+      void ctx.suspend().catch(() => {});
+    } else if (unlocked) {
+      void ctx.resume().catch(() => {});
+    }
+  });
+  // iOS can interrupt the context (a call, the lock screen); the next touch brings it back.
+  const rescue = () => {
+    if (unlocked && ctx && ctx.state !== 'running' && !document.hidden) void ctx.resume().catch(() => {});
+  };
+  window.addEventListener('pointerdown', rescue, { passive: true });
+  window.addEventListener('keydown', rescue, { passive: true });
 }
 
 /* ---------------- Announcer voice ---------------- */
@@ -103,13 +162,14 @@ function speakFallback(text: string) {
  * static underneath, then the squelch tail. A newer line always cuts off an older one.
  */
 export async function announce(id: string, fallbackText: string) {
-  if (!enabled || typeof window === 'undefined') return;
+  if (!enabled || !audioLive() || typeof window === 'undefined') return;
   stopVoice();
   const seq = voiceSeq;
   const clip = await loadClip(id);
   if (seq !== voiceSeq || !enabled) return; // replaced or muted while it was loading
-  const c = getCtx();
-  if (!c || !clip) return speakFallback(fallbackText);
+  const c = liveCtx();
+  if (!c) return; // the tab was hidden while the clip loaded
+  if (!clip) return speakFallback(fallbackText);
 
   const now = c.currentTime;
   const t0 = now + RADIO.keyDelay;
@@ -179,12 +239,17 @@ function getCtx(): AudioContext | null {
     if (!Ctor) return null;
     ctx = new Ctor();
   }
-  if (ctx.state === 'suspended') void ctx.resume();
+  if (ctx.state === 'suspended' && unlocked && !document.hidden) void ctx.resume();
   return ctx;
 }
 
+/** The context only while it is running. Every cue goes through this, so nothing queues on a locked one. */
+function liveCtx(): AudioContext | null {
+  return ctx !== null && ctx.state === 'running' ? ctx : null;
+}
+
 function blip(freq: number, dur: number, type: OscillatorType, gain: number, slideTo?: number, delay = 0) {
-  const c = getCtx();
+  const c = liveCtx();
   if (!c) return;
   const t0 = c.currentTime + delay;
   const osc = c.createOscillator();
@@ -213,7 +278,7 @@ function noiseBuffer(c: AudioContext): AudioBuffer {
 
 /** Filtered noise burst: the "metal on metal" part of a click or gun action. */
 function noise(dur: number, gain: number, freq: number, q = 1, delay = 0) {
-  const c = getCtx();
+  const c = liveCtx();
   if (!c) return;
   const t0 = c.currentTime + delay;
   const src = c.createBufferSource();
@@ -232,7 +297,7 @@ function noise(dur: number, gain: number, freq: number, q = 1, delay = 0) {
 
 /** Rising band of static that swells and fades: the "uplink charging" riser. */
 function riser(dur: number, from: number, to: number, gain: number, q = 1.2, delay = 0) {
-  const c = getCtx();
+  const c = liveCtx();
   if (!c) return;
   const t0 = c.currentTime + delay;
   const src = c.createBufferSource();
@@ -254,7 +319,7 @@ function riser(dur: number, from: number, to: number, gain: number, q = 1.2, del
 
 /** Held note at a fixed pitch (no sliding) that swells in and fades out, for a synth pad. */
 function pad(freq: number, dur: number, gain: number, delay = 0) {
-  const c = getCtx();
+  const c = liveCtx();
   if (!c) return;
   const t0 = c.currentTime + delay;
   const osc = c.createOscillator();
@@ -281,7 +346,7 @@ export function warmUp(voiceIds: string[] = []) {
 }
 
 export function play(cue: Cue) {
-  if (!enabled) return;
+  if (!enabled || !liveCtx()) return; // muted, or the browser has not unlocked audio yet
   const gap = MIN_GAP[cue];
   if (gap) {
     const now = performance.now();
@@ -332,21 +397,25 @@ export function play(cue: Cue) {
       blip(1320, 0.07, 'square', 0.035, undefined, 0.11);
       noise(0.03, 0.08, 5000, 1, 0);
       return;
-    case 'boot':
-      // "system online" stinger, timed to the ~2 s loading bar. Every tone holds a fixed pitch
-      // (the old sliding tone sounded like a boing) and nothing sits below ~440 Hz (no thumps).
-      noise(0.05, 0.15, 3000, 1); // radio opens
-      blip(1450, 0.035, 'square', 0.025);
-      riser(1.7, 700, 6500, 0.07, 1.2, 0.1); // uplink charging
-      pad(440, 1.9, 0.022, 0.15); // A major chord swelling in
-      pad(554, 1.9, 0.02, 0.2);
-      pad(659, 1.9, 0.018, 0.25);
-      pad(880, 1.7, 0.01, 0.5);
-      noise(0.035, 0.22, 2300, 2.2, 0.3); // two metallic bolt clicks
-      noise(0.04, 0.22, 3300, 2.2, 0.42);
-      blip(1568, 0.07, 'square', 0.03, undefined, 1.85); // "ready" double beep as the bar fills
-      blip(2093, 0.12, 'square', 0.03, undefined, 1.95);
-      noise(0.03, 0.08, 5000, 1, 1.85);
+    case 'intro':
+      // The "game start" stinger, played once when the visitor presses Start. It is the first sound
+      // anyone hears on the site, and nothing else sounds like it: a rising two-note chime, a whoosh,
+      // a bright A major chord swelling in, a sparkle run and a bell, about 2.3 s in all. Fixed pitches,
+      // nothing below 440 Hz (no thumps), all soft sines and triangles.
+      // (Levelled by measuring the real output: peaks about -10 dBFS, over 10 dB above the in-page cues and a
+      // little under the voice that follows it.)
+      noise(0.04, 0.45, 3400, 1.2);
+      blip(880, 0.16, 'sine', 0.17); // "start" chime, up a fifth
+      blip(1318.5, 0.2, 'sine', 0.17, undefined, 0.09);
+      riser(0.95, 600, 8000, 0.15, 1.2, 0.12); // whoosh
+      [440, 554.4, 659.3, 987.8].forEach((f, i) => pad(f, 2.1, 0.07 - i * 0.01, 0.3 + i * 0.03)); // chord
+      [1318.5, 1760, 2217.5, 2637].forEach((f, i) => blip(f, 0.11, 'sine', 0.09, undefined, 0.55 + i * 0.09)); // sparkle run
+      blip(1760, 0.95, 'sine', 0.16, undefined, 1.0); // bell
+      blip(1760 * 2.76, 0.5, 'sine', 0.034, undefined, 1.0);
+      noise(0.1, 0.21, 7000, 1.5, 1.0);
       return;
   }
 }
+
+// Dev only: lets a test page fire a cue by name to measure its level (see scripts notes). Not in production builds.
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') Object.assign(window, { __play: play });

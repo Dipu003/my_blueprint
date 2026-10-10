@@ -7,8 +7,8 @@ export function Heading({ kicker, title, aside }: { kicker: string; title: strin
       <div className="flex items-stretch gap-3">
         <span aria-hidden className="w-1.5 -skew-x-12 bg-gradient-to-b from-flame to-flame-hot" />
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">{kicker}</div>
-          <h1 className="font-display text-4xl font-extrabold italic uppercase leading-none tracking-wide text-white sm:text-5xl">
+          <div className="text-[0.6875rem] font-semibold uppercase tracking-[0.3em] text-gold">{kicker}</div>
+          <h1 className="ex3d ex3d-sm font-display text-4xl uppercase leading-none tracking-wide text-white sm:text-5xl">
             {title}
           </h1>
         </div>

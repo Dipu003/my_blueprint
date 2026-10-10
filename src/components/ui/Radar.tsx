@@ -26,7 +26,7 @@ const BLIPS = [
 /** `className` must position the radar (`absolute` or `relative`) and size it. */
 export function Radar({ className = '' }: { className?: string }) {
   return (
-    // text-gold: the radar is drawn in the theme's accent (amber on dark, burnt orange on light).
+    // text-gold: the radar is drawn in the theme's accent colour (lilac on dark, deep purple on light).
     <div aria-hidden className={`text-gold ${className}`}>
       <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full">
         <g fill="none" stroke="currentColor">

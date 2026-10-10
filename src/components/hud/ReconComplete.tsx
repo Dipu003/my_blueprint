@@ -41,7 +41,7 @@ export function ReconComplete() {
           >
             <Icon name="medal" className="h-8 w-8" />
             <div className="leading-none">
-              <div className="font-display text-3xl font-extrabold italic uppercase tracking-wide">Recon complete</div>
+              <div className="font-display text-3xl uppercase tracking-wide">Recon complete</div>
               <div className="mt-1 text-xs font-bold uppercase tracking-[0.2em]">
                 Achievement · all {SECTIONS.length} tabs explored
               </div>

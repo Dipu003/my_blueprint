@@ -13,7 +13,7 @@ interface Props {
   newTab?: boolean;
 }
 
-/** Slanted CoD-style button. `primary` is the glowing orange "Start" button with a moving shine. */
+/** Slanted CoD-style button. `primary` is the glowing "Start" button (the theme's call-to-action colours) with a moving shine. */
 export function GameButton({ label, sub, variant = 'primary', icon, onClick, href, newTab }: Props) {
   const cls = variant === 'primary' ? 'btn-start' : 'btn-ghost';
   const inner = (

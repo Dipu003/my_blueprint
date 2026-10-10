@@ -1,0 +1,58 @@
+{
+  "name": "Deepak",
+  "voice": {
+    "prefer": [
+      "Ravi",
+      "Mark",
+      "David"
+    ],
+    "pitch": "+8%",
+    "rate": "0.96"
+  },
+  "lines": [
+    {
+      "id": "intro-1",
+      "text": "Hey there!",
+      "speech": "Hey there!",
+      "gesture": "wave"
+    },
+    {
+      "id": "intro-2",
+      "text": "I'm Deepak Senapati.",
+      "speech": "I'm Deepak Senapati.",
+      "gesture": "chest"
+    },
+    {
+      "id": "intro-3",
+      "text": "I'm an agentic AI and software developer from Bhubaneswar, India.",
+      "speech": "I'm an agentic A I and software developer, from Bhubaneswar, India.",
+      "gesture": "explain"
+    },
+    {
+      "id": "intro-4",
+      "text": "I build scalable backends, and AI agents that hold up in production.",
+      "speech": "I build scalable backends, and A I agents that hold up in production.",
+      "gesture": "idle"
+    },
+    {
+      "id": "intro-5",
+      "text": "My key skills: Node.js and NestJS for the backend, Kafka for real-time streaming, and MongoDB for data.",
+      "speech": "My key skills: Node J S, and Nest J S, for the backend. Kafka for real-time streaming, and Mongo D B for data.",
+      "gesture": "point",
+      "chips": true
+    },
+    {
+      "id": "intro-6",
+      "text": "I ship on AWS with solid DevOps, build agentic AI on top, and problem solving is my superpower.",
+      "speech": "I ship on A W S with solid Dev Ops, build agentic A I on top, and problem solving is my superpower!",
+      "gesture": "explain",
+      "chips": true
+    },
+    {
+      "id": "intro-7",
+      "text": "Look around my lobby, pick a mission, and let's build something great together!",
+      "speech": "Look around my lobby, pick a mission, and let's build something great, together!",
+      "gesture": "welcome"
+    }
+  ]
+}

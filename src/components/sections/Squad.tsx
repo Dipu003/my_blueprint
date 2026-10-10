@@ -41,17 +41,17 @@ export function Squad() {
           <Panel title="Squad request" tag="Contact">
             <ul className="space-y-1.5">
               {ROWS.map((r) => (
-                <li key={r.key} className="cut tile flex h-16 items-center gap-3 bg-white/[0.05] px-3">
+                <li key={r.key} className="cut tile flex min-h-16 items-center gap-3 bg-white/[0.05] px-3 py-2">
                   <Icon name={r.icon} className="h-5 w-5 shrink-0 text-gold" />
                   <div className="min-w-0 flex-1">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.25em] text-zinc-500">{r.label}</div>
-                    <div className="selectable truncate text-base font-semibold">{r.value}</div>
+                    <div className="text-[0.625rem] font-semibold uppercase tracking-[0.25em] text-zinc-500">{r.label}</div>
+                    <div className="selectable break-words text-sm font-semibold sm:text-base">{r.value}</div>
                   </div>
                   {r.copy && (
                     <button
                       type="button"
                       onClick={() => copy(r.key, r.copy!)}
-                      className="para w-24 shrink-0 bg-white/10 py-1 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-200 transition-colors hover:bg-flame hover:text-on-gold"
+                      className="para w-24 shrink-0 bg-white/10 py-1 text-center text-[0.6875rem] font-bold uppercase tracking-widest text-zinc-200 transition-colors hover:bg-flame hover:text-on-gold"
                     >
                       {copied === r.key ? 'Copied' : 'Copy'}
                     </button>
@@ -74,10 +74,10 @@ export function Squad() {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => play('click')}
-                className="cut tile flex h-14 items-center gap-3 bg-white/[0.05] px-3"
+                className="cut tile flex min-h-14 items-center gap-3 bg-white/[0.05] px-3 py-2"
               >
                 <Icon name="linkedin" className="h-6 w-6 shrink-0 text-gold" />
-                <span className="min-w-0 flex-1 truncate font-semibold">{CONTACT.linkedin.label}</span>
+                <span className="min-w-0 flex-1 break-words text-sm font-semibold sm:text-base">{CONTACT.linkedin.label}</span>
                 <Icon name="arrow" className="h-5 w-5 shrink-0 text-zinc-400" />
               </a>
             </Panel>

@@ -19,7 +19,7 @@ function Header({ r, expandable, open }: { r: Role; expandable: boolean; open: b
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span
-            className={`para px-4 py-0.5 text-[11px] font-bold uppercase tracking-wider ${
+            className={`para px-4 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider ${
               r.tag === 'Current' ? 'bg-ok text-on-ok' : 'bg-gradient-to-r from-flame-hot to-flame text-on-gold'
             }`}
           >
@@ -30,7 +30,7 @@ function Header({ r, expandable, open }: { r: Role; expandable: boolean; open: b
             {r.length ? ` · ${r.length}` : ''}
           </span>
         </div>
-        <h2 className="mt-1 font-display text-2xl font-bold italic uppercase leading-tight text-white sm:text-3xl">{r.role}</h2>
+        <h2 className="mt-1 font-display text-2xl uppercase leading-tight text-white sm:text-3xl">{r.role}</h2>
         <p className="text-sm text-zinc-400">{[r.company, r.location].filter(Boolean).join(' · ')}</p>
       </div>
       {expandable && (
@@ -127,12 +127,12 @@ export function Career() {
                   <div className="flex items-center justify-between gap-2">
                     <Icon name="graduation" className="h-6 w-6 shrink-0 text-gold" />
                     {e.score && (
-                      <span className="para bg-gradient-to-r from-flame-hot to-flame px-4 py-0.5 text-[11px] font-bold uppercase tracking-wider text-on-gold">
+                      <span className="para bg-gradient-to-r from-flame-hot to-flame px-4 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider text-on-gold">
                         {e.score}
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-1 font-display text-xl font-bold italic uppercase leading-tight">{e.title}</h3>
+                  <h3 className="mt-1 font-display text-xl uppercase leading-tight">{e.title}</h3>
                   <p className="text-sm text-zinc-400">{e.school}</p>
                   <p className="mt-auto text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">{e.period}</p>
                 </li>
@@ -147,7 +147,7 @@ export function Career() {
               {CERTIFICATIONS.map((c) => (
                 <li key={c} className="cut tile flex min-h-[7.5rem] flex-col justify-between gap-3 bg-white/[0.05] p-3">
                   <Icon name="medal" className="h-8 w-8 text-gold" />
-                  <span className="font-display text-lg font-bold italic uppercase leading-tight">{c}</span>
+                  <span className="font-display text-lg uppercase leading-tight">{c}</span>
                 </li>
               ))}
             </ul>

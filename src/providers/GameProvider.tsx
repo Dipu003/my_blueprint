@@ -3,11 +3,29 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { PLAYER, SECTIONS, roleById, yearsOfExperience, type SectionId } from '@/data/portfolio';
 import { currentEntry, pushEntry, replaceEntry, type NavState } from '@/lib/nav-history';
-import { announce, play, setSoundEnabled, warmUp } from '@/lib/sound';
+import { announce, play, setSoundEnabled, unlockAudio, warmUp } from '@/lib/sound';
+
+/** Set once the intro has been seen (or skipped) in this browser tab, so a reload goes straight to the lobby. */
+export const BOOT_KEY = 'lobby:loaded';
+
+/** boot = loading screen with "Press start"; intro = the character's welcome; ready = the site. */
+export type Phase = 'boot' | 'intro' | 'ready';
 
 interface GameState {
   section: SectionId;
   go: (id: SectionId) => void;
+  /** Goes back one step: closes a briefing, or returns to the tab before (the lobby if there is none). */
+  goBack: () => void;
+  /** True when there is somewhere to go back to (any tab but the lobby, or an open briefing). */
+  canGoBack: boolean;
+  phase: Phase;
+  startIntro: () => void;
+  /** Leaves the intro (finished or skipped) for the site. */
+  finishIntro: () => void;
+  replayIntro: () => void;
+  /** False from the moment the intro starts until its overlay has faded out; the 3D stage is free after that. */
+  introExited: boolean;
+  markIntroExited: () => void;
   /** Id of the role whose briefing is open on top of the current tab, or null. */
   role: string | null;
   /** Opens a role briefing (or switches the open one to another role). */
@@ -27,6 +45,36 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<string | null>(null);
   const [visited, setVisited] = useState<SectionId[]>(['lobby']);
   const [soundOn, setSoundOn] = useState(true);
+  const [phase, setPhase] = useState<Phase>('boot');
+  const [introExited, setIntroExited] = useState(false);
+
+  // Same tab, seen it already: straight to the site.
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(BOOT_KEY)) {
+        setPhase('ready');
+        setIntroExited(true);
+      }
+    } catch {}
+  }, []);
+
+  const startIntro = useCallback(() => {
+    setIntroExited(false);
+    setPhase('intro');
+  }, []);
+  const finishIntro = useCallback(() => {
+    try {
+      sessionStorage.setItem(BOOT_KEY, '1');
+    } catch {}
+    setPhase('ready');
+  }, []);
+  const replayIntro = useCallback(() => {
+    setIntroExited(false);
+    setPhase('intro');
+  }, []);
+  const markIntroExited = useCallback(() => setIntroExited(true), []);
+  const phaseRef = useRef<Phase>('boot');
+  phaseRef.current = phase;
 
   // Years of experience start at the static fallback so server and client render the same first
   // frame, then the live value is worked out from today's date.
@@ -103,6 +151,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [show]);
 
+  const goBack = useCallback(() => {
+    if (openedRole.current) return closeRole();
+    if (current.current === 'lobby') return;
+    if (currentEntry().depth > 0) {
+      // We pushed this entry, so the one below is a screen of ours: a real Back keeps the browser's stack in step.
+      play('click');
+      window.history.back();
+    } else {
+      // Arrived straight on this tab (a link or a reload): there is nothing below it, so head for the lobby.
+      go('lobby');
+    }
+  }, [closeRole, go]);
+
   // Browser Back/Forward: show whatever entry the browser landed on. A reload or a shared link can
   // also arrive on any tab or role, which opens without the cues.
   useEffect(() => {
@@ -113,15 +174,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('popstate', onPop);
   }, [show]);
 
-  // Get audio ready on the first gesture (context, noise, announcer clips) so the first real
-  // sound doesn't stutter.
+  // Unlock audio on the first gesture and get the announcer clips ready. (Normally the "Press start"
+  // click has done this already; this covers a reload straight into the site.) Capture phase, so it
+  // runs before the click's own cues.
   useEffect(() => {
-    const ready = () => warmUp(SECTIONS.map((s) => s.id));
-    window.addEventListener('pointerdown', ready, { once: true });
-    window.addEventListener('keydown', ready, { once: true });
+    const ready = () => void unlockAudio().then(() => warmUp(SECTIONS.map((s) => s.id)));
+    window.addEventListener('pointerdown', ready, { once: true, capture: true });
+    window.addEventListener('keydown', ready, { once: true, capture: true });
     return () => {
-      window.removeEventListener('pointerdown', ready);
-      window.removeEventListener('keydown', ready);
+      window.removeEventListener('pointerdown', ready, { capture: true });
+      window.removeEventListener('keydown', ready, { capture: true });
     };
   }, []);
 
@@ -133,18 +195,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // Keyboard: 1-5 jump between tabs (not while a role briefing is open on top of them).
+  // Keyboard (only once the site is showing, not over the loading screen or the intro): 1-5 jump
+  // between tabs, Esc goes back. Neither while a role briefing is open on top (it has its own Esc).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey || openedRole.current) return;
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || openedRole.current || phaseRef.current !== 'ready') return;
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+      if (e.key === 'Escape') return goBack();
       const idx = Number(e.key) - 1;
       if (Number.isInteger(idx) && SECTIONS[idx]) go(SECTIONS[idx].id);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go]);
+  }, [go, goBack]);
 
   // Hover sounds for everything interactive, in one place: main tabs, buttons and links, and tiles
   // each get their own cue. Plays once per element you enter, and stays quiet while content is
@@ -203,8 +267,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const xp = Math.round((visited.length / SECTIONS.length) * 100);
   const value = useMemo(
-    () => ({ section, go, role, openRole, closeRole, visited, xp, years, soundOn, toggleSound }),
-    [section, go, role, openRole, closeRole, visited, xp, years, soundOn, toggleSound],
+    () => ({
+      section, go, goBack, canGoBack: role !== null || section !== 'lobby', role, openRole, closeRole, visited, xp, years, soundOn, toggleSound,
+      phase, startIntro, finishIntro, replayIntro, introExited, markIntroExited,
+    }),
+    [section, go, goBack, role, openRole, closeRole, visited, xp, years, soundOn, toggleSound, phase, startIntro, finishIntro, replayIntro, introExited, markIntroExited],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

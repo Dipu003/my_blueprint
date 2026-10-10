@@ -22,7 +22,7 @@ export function Meter({ label, ariaLabel, value, right, delay = 0 }: Props) {
       aria-valuemax={100}
       aria-valuenow={v}
     >
-      <div className="mb-1 flex justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-400">
+      <div className="mb-1 flex justify-between text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-zinc-400">
         <span>{label}</span>
         <span className="text-zinc-200">{right ?? `${v}%`}</span>
       </div>

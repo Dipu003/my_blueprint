@@ -25,10 +25,32 @@ const config: Config = {
         // Accent for FILLS (bars, pills, dots, buttons): vivid in both themes.
         flame: { DEFAULT: c('flame'), hot: c('flame-hot') },
         // Text that sits on a flame (or ok) fill.
+        // The two neon highlight colours (violet and cyan): hover glows, edges, hex field.
+        hl: c('hl'),
+        neon: c('hl-2'),
         'on-gold': c('on-gold'),
         'on-ok': c('on-ok'),
         ok: c('ok'),
         danger: c('danger'),
+      },
+      // A smaller type scale for the whole app (he asked for smaller type). Arbitrary sizes such as
+      // text-[0.625rem] are unaffected.
+      fontSize: {
+        xs: ['0.7rem', { lineHeight: '1rem' }],
+        sm: ['0.8rem', { lineHeight: '1.25rem' }],
+        base: ['0.9rem', { lineHeight: '1.5rem' }],
+        lg: ['1rem', { lineHeight: '1.5rem' }],
+        xl: ['1.1rem', { lineHeight: '1.6rem' }],
+        '2xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '3xl': ['1.5rem', { lineHeight: '2rem' }],
+        '4xl': ['1.8rem', { lineHeight: '2.2rem' }],
+        '5xl': ['2.2rem', { lineHeight: '1' }],
+        '6xl': ['2.6rem', { lineHeight: '1' }],
+        '7xl': ['3.2rem', { lineHeight: '1' }],
+      },
+      // `short:` = a screen with little height (a phone held sideways): the intro and the loading screen go compact
+      screens: {
+        short: { raw: '(max-height: 520px)' },
       },
       fontFamily: {
         display: ['var(--font-display)', 'Impact', 'sans-serif'],
