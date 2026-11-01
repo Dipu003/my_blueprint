@@ -29,10 +29,25 @@ export type IconName =
   | 'sun'
   | 'moon'
   | 'infinity'
-  | 'puzzle';
+  | 'puzzle'
+  | 'user'
+  | 'globe'
+  | 'branch'
+  | 'terminal'
+  | 'split'
+  | 'scale'
+  | 'transfer'
+  | 'history'
+  | 'chart'
+  | 'external'
+  | 'pause'
+  | 'refresh'
+  | 'key'
+  | 'layers';
 
-// 24x24 stroke icons. Paths only, so they inherit color from `currentColor`.
-const PATHS: Record<IconName, string[]> = {
+// 24x24 stroke icons. Paths only, so they inherit color from `currentColor`. Exported for SVG
+// diagrams that draw an icon inside their own <svg> (see missions/HldMap).
+export const ICON_PATHS: Record<IconName, string[]> = {
   lobby: ['M12 2.5 20 7v10l-8 4.5L4 17V7z', 'M12 8l3.5 2v4L12 16l-3.5-2v-4z'],
   missions: ['M6 3v18', 'M6 4h12l-2.5 4.5L18 13H6'],
   loadout: ['M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z', 'M12 8v8'],
@@ -108,6 +123,30 @@ const PATHS: Record<IconName, string[]> = {
   puzzle: [
     'M5 8h3.2a2.3 2.3 0 1 1 4.6 0H16v3.2a2.3 2.3 0 1 1 0 4.6V19h-3.2a2.3 2.3 0 1 0-4.6 0H5v-3.2a2.3 2.3 0 1 0 0-4.6z',
   ],
+  user: ['M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', 'M4 20.5c0-3.9 3.6-6.5 8-6.5s8 2.6 8 6.5'],
+  globe: [
+    'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
+    'M3 12h18',
+    'M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z',
+  ],
+  branch: [
+    'M8 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z',
+    'M8 16.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z',
+    'M16 5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z',
+    'M8 7.5v9',
+    'M16 9.5c0 4-8 3-8 7',
+  ],
+  terminal: ['M3 5h18v14H3z', 'M7 10l3 2.5L7 15', 'M12.5 15H17'],
+  split: ['M12 3v6', 'M12 9l-6 6v6', 'M12 9l6 6v6'],
+  scale: ['M12 4v16', 'M8 20h8', 'M5 7h14', 'M5 7l-3 6h6z', 'M19 7l-3 6h6z'],
+  transfer: ['M4 8h14', 'M14 4l4 4-4 4', 'M20 16H6', 'M10 12l-4 4 4 4'],
+  history: ['M3.5 12a8.5 8.5 0 1 0 2.5-6', 'M3 4v4h4', 'M12 8v4.5l3 2'],
+  chart: ['M4 20V4', 'M4 20h16', 'M8 16v-4', 'M12 16V8', 'M16 16v-6'],
+  external: ['M14 4h6v6', 'M20 4l-9 9', 'M18 14v5H5V6h5'],
+  pause: ['M8 5v14', 'M16 5v14'],
+  refresh: ['M20 11a8 8 0 0 0-14.3-4.9L4 8', 'M4 4v4h4', 'M4 13a8 8 0 0 0 14.3 4.9L20 16', 'M20 20v-4h-4'],
+  key: ['M7.5 14.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z', 'M11 11h10', 'M17 11v3', 'M20 11v2'],
+  layers: ['M12 3l9 5-9 5-9-5z', 'M3 12.5l9 5 9-5', 'M3 17l9 5 9-5'],
 };
 
 export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; className?: string }) {
@@ -122,7 +161,7 @@ export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; classNam
       strokeLinejoin="round"
       className={className}
     >
-      {PATHS[name].map((d) => (
+      {ICON_PATHS[name].map((d) => (
         <path key={d} d={d} />
       ))}
     </svg>

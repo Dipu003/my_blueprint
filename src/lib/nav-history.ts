@@ -45,3 +45,20 @@ export const pushEntry = (n: NavState) => write('pushState', n, currentEntry().d
 
 /** Rewrites the current entry in place, with no new Back stop. */
 export const replaceEntry = (n: NavState) => write('replaceState', n, currentEntry().depth);
+
+/**
+ * What follows the tab in the address: "#missions/nexus/hld" gives ['nexus', 'hld']. A tab reads it
+ * when it opens, so a shared link lands on the same view inside the tab.
+ */
+export function hashTail(): string[] {
+  return window.location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).slice(1);
+}
+
+/**
+ * Shows a view inside a tab in the address bar (so it can be copied) without adding a Back stop.
+ * Only touches the URL: `history.state` (ours and Next's) is carried over as it is.
+ */
+export function setHashTail(section: SectionId, tail: string[]) {
+  const url = `#${[section, ...tail].join('/')}`;
+  if (window.location.hash !== url) window.history.replaceState(window.history.state, '', url);
+}

@@ -4,10 +4,12 @@
 // 3D character (see components/character).
 
 import gsap from 'gsap';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { SplitText } from 'gsap/SplitText';
 
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(SplitText);
+  // MotionPath moves the request "packets" along the lines of the Nexus architecture map.
+  gsap.registerPlugin(SplitText, MotionPathPlugin);
   gsap.defaults({ ease: 'power3.out', duration: 0.6 });
   // for tests: lets a script freeze the timelines and look at any frame (not in production builds)
   if (process.env.NODE_ENV !== 'production') Object.assign(window, { __gsap: gsap });

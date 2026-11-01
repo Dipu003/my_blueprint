@@ -1117,6 +1117,187 @@ button,
   z-index: 2;
 }
 
+/* ---------- Mission blueprints (the Nexus HLD map and LLD diagrams) ---------- */
+/* SVG drawn with the theme tokens, so it follows dark and light. Only the edges of the current step
+   move (a dash flowing towards the receiver); everything else is still, and the map's timeline stops
+   while it is off screen. */
+.bp-grid-line {
+  fill: none;
+  stroke: rgb(var(--hl-line) / 0.09);
+  stroke-width: 1;
+}
+.bp-zone rect {
+  fill: rgb(var(--hl) / 0.035);
+  stroke: rgb(var(--hl-line) / 0.42);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 6;
+}
+.bp-zone text {
+  fill: rgb(var(--gold));
+  font-family: var(--font-ui), sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.bp-edge {
+  fill: none;
+  stroke: rgb(var(--hl-line) / 0.55);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  transition: stroke 0.3s;
+}
+.bp-edge.on {
+  stroke: rgb(var(--hl-2));
+  stroke-width: 2.2;
+  stroke-dasharray: 7 6;
+  animation: bp-flow 0.7s linear infinite;
+}
+.bp-edge.on.back {
+  animation-direction: reverse;
+}
+.bp-track {
+  fill: none;
+  stroke: none;
+}
+.bp-comet {
+  fill: none;
+  stroke: rgb(var(--hl-2));
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgb(var(--hl-2) / 0.9));
+}
+.bp-arrowhead {
+  fill: rgb(var(--hl-line) / 0.85);
+}
+.bp-elabel rect {
+  fill: rgb(var(--ink-2));
+  stroke: rgb(var(--hl-line) / 0.45);
+}
+.bp-elabel text {
+  fill: rgb(var(--z300));
+  font-family: var(--font-ui), sans-serif;
+  font-weight: 600;
+}
+.bp-elabel.on rect {
+  fill: rgb(var(--ink-3));
+  stroke: rgb(var(--hl-2));
+}
+.bp-elabel.on text {
+  fill: rgb(var(--fg));
+}
+.bp-box {
+  fill: rgb(var(--ink-3));
+  stroke: rgb(var(--hl-line) / 0.55);
+  stroke-width: 1.2;
+  transition: stroke 0.3s, fill 0.3s;
+}
+.bp-node.on .bp-box {
+  fill: rgb(var(--ink-4));
+  stroke: rgb(var(--hl-2));
+  stroke-width: 2;
+}
+.bp-ring {
+  fill: none;
+  stroke: rgb(var(--hl-2));
+  stroke-width: 2;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.bp-node.on .bp-ring {
+  animation: bp-ring 1.6s ease-out infinite;
+}
+.bp-tile-a {
+  stop-color: rgb(var(--flame));
+}
+.bp-tile-b {
+  stop-color: rgb(var(--flame-hot));
+}
+.bp-glyph {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bp-title {
+  fill: rgb(var(--fg));
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.bp-sub {
+  fill: rgb(var(--z400));
+  font-family: var(--font-ui), sans-serif;
+  font-weight: 500;
+}
+.bp-halo {
+  fill: rgb(var(--hl-2) / 0.35);
+}
+.bp-core {
+  fill: #fff;
+  stroke: rgb(var(--hl-2));
+  stroke-width: 2;
+}
+/* the faint drafting grid behind the blueprint panels */
+.bp-paper {
+  background-image: linear-gradient(rgb(var(--hl-line) / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--hl-line) / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* a green "live" light that breathes (transform/opacity only) */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: rgb(var(--ok));
+}
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(var(--ok));
+  animation: live-ping 1.8s ease-out infinite;
+}
+@keyframes bp-flow {
+  to {
+    stroke-dashoffset: -13;
+  }
+}
+@keyframes bp-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.12, 1.3);
+  }
+}
+@keyframes live-ping {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-edge.on,
+  .bp-node.on .bp-ring,
+  .live-dot::after {
+    animation: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ember,
   .btn-start::after,

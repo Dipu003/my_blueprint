@@ -19,7 +19,7 @@ export interface SectionDef {
 // After editing a line there, run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-voice.ps1
 export const SECTIONS: SectionDef[] = [
   { id: 'lobby', label: 'Lobby', hint: 'Operator profile', status: 'Operator online', voice: voiceLines.lobby },
-  { id: 'missions', label: 'Missions', hint: 'Featured project', status: 'Mission intel acquired', voice: voiceLines.missions },
+  { id: 'missions', label: 'Missions', hint: 'Projects', status: 'Mission intel acquired', voice: voiceLines.missions },
   { id: 'loadout', label: 'Loadout', hint: 'Skills & stack', status: 'Gear locked in', voice: voiceLines.loadout },
   { id: 'career', label: 'Career', hint: 'Match history', status: 'Service record loaded', voice: voiceLines.career },
   { id: 'squad', label: 'Squad Up', hint: 'Get in touch', status: 'Standing by', voice: voiceLines.squad },
@@ -390,12 +390,7 @@ export const OBJECTIVES: Objective[] = [
   },
 ];
 
-/** Locked placeholder card. Replace with the next project when it is ready. */
-export const NEXT_MISSION = {
-  code: 'Mission 02',
-  title: 'Classified',
-  hint: 'New intel incoming. Check back soon.',
-};
+// Mission 02 (Nexus, the expense-splitting app) has its own file: src/data/nexus.ts.
 
 /* ---------------- Loadout ---------------- */
 
@@ -423,12 +418,12 @@ export const LOADOUT: LoadoutSlot[] = [
   {
     slot: 'Tactical',
     name: 'Cloud',
-    items: ['AWS Lambda', 'EC2', 'S3', 'API Gateway', 'IAM', 'CloudWatch', 'ECR', 'ECS', 'Athena', 'Cognito'],
+    items: ['AWS Lambda', 'EC2', 'S3', 'API Gateway', 'IAM', 'CloudWatch', 'ECR', 'ECS', 'Athena', 'Cognito', 'Oracle Cloud'],
   },
   {
     slot: 'Field Upgrade',
     name: 'DevOps',
-    items: ['Docker', 'Kubernetes', 'Terraform', 'Jenkins', 'GitHub Actions', 'AWS CodePipeline', 'Nginx', 'PM2'],
+    items: ['Docker', 'Kubernetes', 'Terraform', 'Jenkins', 'GitHub Actions', 'AWS CodePipeline', 'Nginx', 'PM2', 'Caddy', 'systemd'],
   },
   { slot: 'Perk 1', name: 'Databases', items: ['MongoDB', 'DynamoDB', 'Redis', 'PostgreSQL', 'Firebase'] },
   {
@@ -436,7 +431,7 @@ export const LOADOUT: LoadoutSlot[] = [
     name: 'Messaging & Security',
     items: ['Apache Kafka', 'JWT', 'RBAC', 'SSO', 'API Security', 'Authorization'],
   },
-  { slot: 'Perk 3', name: 'Frontend', items: ['React', 'Redux'] },
+  { slot: 'Perk 3', name: 'Frontend', items: ['React', 'Next.js', 'Redux', 'Tailwind CSS', 'TanStack Query', 'Three.js'] },
   {
     slot: 'Wildcard',
     name: 'Other',

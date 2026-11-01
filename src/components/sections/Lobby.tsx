@@ -126,7 +126,7 @@ export function Lobby() {
           </motion.p>
 
           <motion.div variants={item} className="relative mt-6">
-            <GameButton label="Start missions" sub="Featured deployment" onClick={() => go('missions')} />
+            <GameButton label="Start missions" sub="New · Nexus is live" onClick={() => go('missions')} />
           </motion.div>
 
           <motion.ul variants={item} aria-label="Highlights" className="relative mt-7 max-w-xl space-y-1">
